@@ -48,6 +48,16 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
+
+           <el-form-item label="农机号" prop="hostNum">
+            <el-input
+              v-model="queryParams.hostNum"
+              placeholder="请输入农机号"
+              clearable
+              style="width: 240px"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
           <el-form-item label="状态" prop="status">
             <el-select
               v-model="queryParams.status"
@@ -143,7 +153,8 @@
           <el-table-column label="用户昵称" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
           <el-table-column label="部门" align="center" key="deptName" prop="dept.deptName" v-if="columns[3].visible" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" width="120" />
-          <el-table-column label="状态" align="center" key="status" v-if="columns[5].visible">
+          <el-table-column label="农机号" align="center" key="hostNum" prop="hostNum" v-if="columns[5].visible" width="120" />
+          <el-table-column label="状态" align="center" key="status" v-if="columns[6].visible">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -153,7 +164,7 @@
               ></el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" v-if="columns[6].visible" width="160">
+          <el-table-column label="创建时间" align="center" prop="createTime" v-if="columns[7].visible" width="160">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
@@ -221,6 +232,16 @@
           <el-col :span="12">
             <el-form-item label="手机号码" prop="phonenumber">
               <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
+            </el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="身份证号" prop="identity">
+              <el-input v-model="form.identity" placeholder="请输入身份证号" maxlength="18" />
+            </el-form-item>
+          </el-col>
+            <el-col :span="12">
+            <el-form-item label="农机号" prop="hostNum">
+              <el-input v-model="form.hostNum" placeholder="请输入农机号" maxlength="18" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -409,6 +430,7 @@ export default {
         pageSize: 10,
         userName: undefined,
         phonenumber: undefined,
+        hostNum: undefined,
         status: undefined,
         deptId: undefined
       },
@@ -419,8 +441,9 @@ export default {
         { key: 2, label: `用户昵称`, visible: true },
         { key: 3, label: `部门`, visible: true },
         { key: 4, label: `手机号码`, visible: true },
-        { key: 5, label: `状态`, visible: true },
-        { key: 6, label: `创建时间`, visible: true }
+        { key: 5, label: `农机号`, visible: true },
+        { key: 6, label: `状态`, visible: true },
+        { key: 7, label: `创建时间`, visible: true }
       ],
       // 表单校验
       rules: {
@@ -516,7 +539,8 @@ export default {
         userName: undefined,
         nickName: undefined,
         password: undefined,
-        phonenumber: undefined,
+        identity: undefined,
+        hostNum: undefined,
         email: undefined,
         sex: undefined,
         status: "0",
