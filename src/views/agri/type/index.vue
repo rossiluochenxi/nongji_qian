@@ -71,9 +71,11 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange"
+       border resizable
+     auto-resize="true">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键id" align="center" prop="id" />
+      <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="耕地类别" align="center" prop="category">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.agri_type_category" :value="scope.row.category"/>
@@ -99,7 +101,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"

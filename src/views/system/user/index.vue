@@ -240,9 +240,20 @@
             </el-form-item>
           </el-col>
             <el-col :span="12">
-            <el-form-item label="农机号" prop="hostNum">
+            <!-- <el-form-item label="农机号" prop="hostNum">
               <el-input v-model="form.hostNum" placeholder="请输入农机号" maxlength="18" />
-            </el-form-item>
+            </el-form-item> -->
+          <el-form-item label="农机号" prop="hostNum">
+           <el-select v-model="form.hostNum" filterable placeholder="请选择" @change="setId" style="width: 100%;" >
+            <el-option
+              v-for="item in argiMachineryList"
+              :key="item.id"
+              :label="item.hostNum"
+              :value="item.hostNum">
+            </el-option>
+          </el-select>
+
+      </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
@@ -364,6 +375,7 @@
 <script>
 import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus, deptTreeSelect } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
+import { listMachinery} from "@/api/agri/machinery";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -373,6 +385,7 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      argiMachineryList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -483,6 +496,7 @@ export default {
   },
   created() {
     this.getList();
+     this.getArgiMachinery();
     this.getDeptTree();
     this.getConfigKey("sys.user.initPassword").then(response => {
       this.initPassword = response.msg;
@@ -498,6 +512,17 @@ export default {
           this.loading = false;
         }
       );
+    },
+             /**
+          * 获取农机信息
+          */
+        getArgiMachinery(){
+        listMachinery().then( res => {
+            if( res.code != 200){ return this.message("系统错误,请重新查询") }
+          this.argiMachineryList = res.rows
+          // console.log(this.userLis+"============"+ res.rows);
+              }
+              )
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {
@@ -541,6 +566,7 @@ export default {
         password: undefined,
         identity: undefined,
         hostNum: undefined,
+        argiMachineryId: undefined,
         email: undefined,
         sex: undefined,
         status: "0",
@@ -685,6 +711,14 @@ export default {
       this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
       this.getList();
     },
+    setId() {
+    // 获取选中的用户对象
+      const selectedArgiMachinery = this.argiMachineryList.find(item => item.hostNum === this.form.hostNum);
+    // 将选中用户的id赋值给form.code
+      this.form.argiMachineryId = selectedArgiMachinery ? selectedArgiMachinery.id : null;
+      console.log("sss" + this.form.argiMachineryId);
+
+  },
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();

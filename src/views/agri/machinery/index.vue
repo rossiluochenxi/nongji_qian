@@ -69,9 +69,11 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="machineryList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="machineryList" @selection-change="handleSelectionChange"
+       border resizable
+     auto-resize="true">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键id" align="center" prop="id" />
+      <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="主机号" align="center" prop="hostNum" />
       <el-table-column label="农机类型" align="center" prop="machineryType" />
       <el-table-column label="农机长度" align="center" prop="machineryLength" />
@@ -94,7 +96,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -111,6 +113,9 @@
         </el-form-item>
         <el-form-item label="农机长度" prop="machineryLength">
           <el-input v-model="form.machineryLength" placeholder="请输入农机长度" />
+        </el-form-item>
+          <el-form-item label="农机类型" prop="machineryType">
+          <el-input v-model="form.machineryType" placeholder="请输入农机类型" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
