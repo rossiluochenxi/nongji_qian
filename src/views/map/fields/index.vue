@@ -166,6 +166,7 @@ export default {
     dicts: ['agri_type_category'],
   data() {
     return {
+      //类型list集合
       typeList: [],
       // 遮罩层
       loading: true,
@@ -343,8 +344,8 @@ export default {
     // 获取选中的用户对象
       const selectetypeList = this.typeList.find(item => item.type === this.form.agriTypeType);
     // 将选中用户的id和种类赋值给对象
-          this.form.agriTypeId = selectetypeList ? selectetypeList.id : null;
-          this.form.agriTypeCategory = selectetypeList ? selectetypeList.category : null;
+      this.form.agriTypeId = selectetypeList ? selectetypeList.id : null;
+      this.form.agriTypeCategory = selectetypeList ? selectetypeList.category : null;
 
           console.log("sss" + this.form.agriTypeId);
          console.log("sss" + this.form.agriTypeCategory);
