@@ -192,6 +192,7 @@ export default {
        }
          )
     },
+// 初始化地图
 initMap() {
   this.map = new window.AMap.Map("mapContainer", {
     zoom: 8,
@@ -205,54 +206,28 @@ initMap() {
   const satelliteLayer = new window.AMap.TileLayer.Satellite();
   this.map.add(satelliteLayer);
 
-  // 初始化位置点数组
-  let positions = [];
+  // 初始化多边形坐标数组
+  let polygonPath = [];
 
-  // 循环10次
-  for (let i = 0; i < 10; i++) {
-    // 模拟获取的经纬度数据
-    const latitude = getRandomInRange(41.8, 42.0, 6); // 模拟纬度在 41.8 到 42.0 之间的随机值
-    const longitude = getRandomInRange(123.3, 123.5, 6); // 模拟经度在 123.3 到 123.5 之间的随机值
-    
-    // 将新的经纬度位置添加到数组中
-    positions.push([longitude, latitude]);
-
-    // 创建圆点标记并添加到地图上
-    const circleMarker = new window.AMap.CircleMarker({
-      center: [longitude, latitude], // 圆心的经纬度坐标
-      radius: 2, // 圆的半径，单位：像素
-      strokeColor: "#00FF00", // 边框颜色，绿色
-      strokeOpacity: 1, // 边框透明度，取值范围：0-1
-      strokeWeight: 2, // 边框宽度，单位：像素
-      fillColor: "#00FF00", // 填充颜色，绿色
-      fillOpacity: 1 // 填充透明度，取值范围：0-1
+  // 监听地图点击事件
+  this.map.on('click', (e) => {
+    // 获取点击位置的经纬度坐标
+    const lnglat = [e.lnglat.getLng(), e.lnglat.getLat()];
+    // 将坐标添加到多边形坐标数组中
+    polygonPath.push(lnglat);
+    // 创建多边形并添加到地图上
+    const polygon = new window.AMap.Polygon({
+      path: polygonPath, // 多边形坐标数组
+      strokeColor: "#FF33FF", // 线颜色
+      strokeOpacity: 1, // 线透明度
+      strokeWeight: 2, // 线宽
+      fillColor: "#FF99FF", // 填充颜色
+      fillOpacity: 0.35 // 填充透明度
     });
-
-    circleMarker.setMap(this.map); // 将圆点标记添加到地图上
-  }
-
-  // 创建多边形对象
-  const polygon = new window.AMap.Polygon({
-    path: positions, // 使用位置点数组创建多边形
-    strokeColor: "#00FF00", // 线颜色，绿色
-    strokeWeight: 4,
-    strokeOpacity: 1,
-    fillColor: "#00FF00", // 填充颜色，绿色
-    fillOpacity: 0 // 填充透明度，取值范围：0-1
+    polygon.setMap(this.map); // 将多边形添加到地图上
   });
-
-  // 将多边形添加到地图
-  this.map.add(polygon);
-
-  // 计算多边形的面积
-  const area = polygon.getArea();
-  console.log("多边形的面积为：" + area + " 平方米");
-
-  // 生成指定范围内的随机数
-  function getRandomInRange(from, to, fixed) {
-    return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
-  }
-},
+}
+,
 
 
 

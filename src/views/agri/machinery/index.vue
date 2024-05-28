@@ -111,9 +111,15 @@
         <el-form-item label="主机号" prop="hostNum">
           <el-input v-model="form.hostNum" placeholder="请输入主机号" />
         </el-form-item>
-        <el-form-item label="农机长度" prop="machineryLength">
+        <!-- <el-form-item label="农机长度" prop="machineryLength">
           <el-input v-model="form.machineryLength" placeholder="请输入农机长度" />
-        </el-form-item>
+        </el-form-item> -->
+        <el-form-item label="农机长度" prop="machineryLength" :rules="[
+    { required: true, message: '请输入农机长度', trigger: 'blur' },
+    { validator: validateMachineryLength, message: '农机长度只能为数字', trigger: 'blur' }
+  ]">
+    <el-input v-model="form.machineryLength" placeholder="请输入农机长度" />
+  </el-form-item>
           <el-form-item label="农机类型" prop="machineryType">
           <el-input v-model="form.machineryType" placeholder="请输入农机类型" />
         </el-form-item>
@@ -160,16 +166,40 @@ export default {
         machineryLength: null
       },
       // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
+      form: {
+        machineryLength: ''  // 农机长度字段
+      },
+  
+    // 表单校验
+  rules: {
+    hostNum: [
+          { required: true, message: "主机号不能为空", trigger: "blur" }
+        ],
+    machineryLength: [
+          { required: true, message: '农机长度不能为空', trigger: 'blur' },
+        ],
+    machineryType:     [
+          { required: true, message: "农机类型不能为空", trigger: "blur" }
+        ]
+
       }
+  
+
     };
   },
   created() {
     this.getList();
   },
   methods: {
+
+    validateMachineryLength(rule, value, callback) {
+      const reg = /^\d+(\.\d+)?$/; // 正则表达式，用于匹配数字
+      if (value && !reg.test(value)) {
+        callback(new Error('农机长度只能为数字'));
+      } else {
+        callback();
+      }
+    },
     /** 查询农机管理列表 */
     getList() {
       this.loading = true;

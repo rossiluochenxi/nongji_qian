@@ -171,7 +171,14 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
+   // 表单校验
+   rules: {
+    category: [
+          { required: true, message: "耕地类别不能为空", trigger: "blur" }
+        ],
+    type:     [
+          { required: true, message: "耕地类型不能为空", trigger: "blur" }
+        ]
       }
     };
   },
