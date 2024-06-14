@@ -9,7 +9,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="任务开始时间" prop="startTime">
+      <!-- <el-form-item label="任务开始时间" prop="startTime">
         <el-date-picker clearable
           v-model="queryParams.startTime"
           type="date"
@@ -24,7 +24,7 @@
           value-format="yyyy-MM-dd"
           placeholder="请选择任务结束时间">
         </el-date-picker>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="任务名称" prop="bizName">
         <el-input
           v-model="queryParams.bizName"
@@ -40,7 +40,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="primary"
           plain
@@ -71,6 +71,16 @@
           @click="handleDelete"
           v-hasPermi="['biz:tasks:remove']"
         >删除</el-button>
+      </el-col> -->
+             <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          v-hasPermi="['biz:tasks:add']"
+        >下发任务</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -82,6 +92,7 @@
           v-hasPermi="['biz:tasks:export']"
         >导出</el-button>
       </el-col>
+
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -89,10 +100,21 @@
          border resizable
      auto-resize="true">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="任务名称" align="center" prop="bizName" />
+      <el-table-column label="任务状态" align="center" prop="status" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="农机主" align="center" prop="agriFarmerName" />
-      <el-table-column label="农耕作业" align="center" prop="agriFieldsName" />
-      <el-table-column label="任务开始时间" align="center" prop="startTime" width="180">
+
+
+
+      <el-table-column label="电子围栏" align="center" prop="agriFieldsName" />
+              <el-table-column label="类别" align="center" prop="agriTypeCategory">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.agri_type_category" :value="scope.row.agriTypeCategory"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="类型" align="center" prop="agriTypeType" />
+      <!-- <el-table-column label="任务开始时间" align="center" prop="startTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startTime, '{y}-{m}-{d}') }}</span>
         </template>
@@ -100,10 +122,8 @@
       <el-table-column label="任务结束时间" align="center" prop="endTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="任务状态" align="center" prop="status" />
-      <el-table-column label="任务名称" align="center" prop="bizName" />
+        </template> -->
+      <!-- </el-table-column> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -134,11 +154,56 @@
 
     <!-- 添加或修改业务任务对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+       
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="农机主" prop="agriFarmerName">
-          <el-input v-model="form.agriFarmerName" placeholder="请输入农机主" />
+             <el-form-item label="任务名称" prop="bizName">
+          <el-input v-model="form.bizName" placeholder="请输入任务名称" />
         </el-form-item>
-        <el-form-item label="任务开始时间" prop="startTime">
+        <!-- <el-form-item label="农机主" prop="agriFarmerName">
+          <el-input v-model="form.agriFarmerName" placeholder="指派任务农机主" />
+        </el-form-item> -->
+        
+   <el-form-item label="农机主" prop="agriFarmerName">
+           <el-select v-model="form.agriFarmerName" filterable placeholder="请选择"  style="width: 100%;" >
+            <el-option
+              v-for="item in userList"
+              :key="item.userId"
+              :label="item.nickName"
+              :value="item.nickName">
+            </el-option>
+          </el-select>
+
+      </el-form-item>
+             <el-form-item label="电子围栏" prop="agri_farmer_name">
+          <el-input v-model="form.agri_farmer_name" placeholder="请选择耕地作业电子围栏" />
+        </el-form-item>
+         <!-- <el-form-item label="任务状态" prop="status">
+          <el-input v-model="form.status" placeholder="任务状态" />
+        </el-form-item> -->
+          
+       <el-form-item label="耕作类型" prop="agriTypeType">
+           <el-select v-model="form.agriTypeType" filterable placeholder="请选择" @change="setId" style="width: 100%;" >
+            <el-option
+              v-for="item in typeList"
+              :key="item.id"
+              :label="item.type"
+              :value="item.type">
+            </el-option>
+          </el-select>
+
+      </el-form-item>
+
+<el-form-item label="耕作类别" prop="agriTypeCategory" >
+    <el-select v-model="form.agriTypeCategory" :disabled="form.agriTypeType !== ''" placeholder="请选择耕作类别" style="display: block" >
+        <el-option
+            v-for="option in dict.type.agri_type_category"
+            :key="option.value"
+            :label="option.label"
+            :value="option.value"
+        ></el-option>
+    </el-select>
+</el-form-item>
+        <!-- <el-form-item label="任务开始时间" prop="startTime">
           <el-date-picker clearable
             v-model="form.startTime"
             type="date"
@@ -153,10 +218,8 @@
             value-format="yyyy-MM-dd"
             placeholder="请选择任务结束时间">
           </el-date-picker>
-        </el-form-item>
-        <el-form-item label="任务名称" prop="bizName">
-          <el-input v-model="form.bizName" placeholder="请输入任务名称" />
-        </el-form-item>
+        </el-form-item> -->
+  
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -168,11 +231,19 @@
 
 <script>
 import { listTasks, getTasks, delTasks, addTasks, updateTasks } from "@/api/biz/tasks";
+import { listTypeQuery } from "@/api/agri/type";
+import { listUserQuery } from "@/api/system/user";
+
 
 export default {
   name: "Tasks",
+   dicts: ['agri_type_category'],
   data() {
     return {
+       //农户list集合
+       userList: [],
+       //类型list集合
+      typeList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -199,6 +270,8 @@ export default {
         agriFieldsName: null,
         startTime: null,
         endTime: null,
+        agriTypeCategory: null,
+        agriTypeType: null,
         status: null,
         bizName: null
       },
@@ -206,11 +279,19 @@ export default {
       form: {},
       // 表单校验
       rules: {
+            agriTypeCategory: [
+          { required: true, message: "耕地类别不能为空", trigger: "change" }
+        ],
+        agriTypeType: [
+          { required: true, message: "耕地类型不能为空", trigger: "change" }
+        ]
       }
     };
   },
   created() {
     this.getList();
+    this.getType();
+    this.getAgriUserList();
   },
   methods: {
     /** 查询业务任务列表 */
@@ -222,6 +303,28 @@ export default {
         this.loading = false;
       });
     },
+            /**
+          * 获取地图作业类型
+          */
+        getType(){
+        listTypeQuery().then( res => {
+            if( res.code != 200){ return this.message("系统错误,请重新查询") }
+          this.typeList = res.rows
+          console.log(this.typeList+"============"+ res.rows);
+              }
+              )
+    },
+                /**
+          * 获取农户信息
+          */
+        getAgriUserList(){
+        listUserQuery().then( res => {
+       if( res.code != 200){ return this.message("系统错误,请重新查询") }
+          this.userList = res.rows
+          console.log(this.userList+"============"+ res.rows);
+              }
+              )
+    }, 
     // 取消按钮
     cancel() {
       this.open = false;
@@ -316,7 +419,22 @@ export default {
       this.download('biz/tasks/export', {
         ...this.queryParams
       }, `tasks_${new Date().getTime()}.xlsx`)
+    },
+      setId() {
+        // 获取选中的用户对象
+        const selectedType = this.typeList.find(item => item.type === this.form.agriTypeType);
+        // 将选中用户的id和种类赋值给对象
+        if (selectedType) {
+            this.form.agriTypeId = selectedType.id;
+            this.$set(this.form, 'agriTypeCategory', selectedType.category); // 使用this.$set()确保Vue.js检测到属性变化
+        } else {
+            this.form.agriTypeId = null;
+            this.$set(this.form, 'agriTypeCategory', '');
+        }
+        console.log("Agri Type ID: " + this.form.agriTypeId);
+        console.log("Agri Type Category: " + this.form.agriTypeCategory);
     }
+
   }
 };
 </script>

@@ -149,6 +149,20 @@ export const dynamicRoutes = [
     ],
   },
   {
+    path: "/map/fie-lds",
+    component: Layout,
+    hidden: true,
+    permissions: ["map:fields:list"],
+    children: [
+      {
+        path: "get-map/:id", // 例如：/map/fields/get-map/123
+        component: () => import("@/views/map/fields/getMap.vue"),
+        name: "GetMap",
+        meta: { title: "电子围栏地图", activeMenu: "/map/fields" },
+      },
+    ], 
+  },
+  {
     path: "/monitor/job-log",
     component: Layout,
     hidden: true,

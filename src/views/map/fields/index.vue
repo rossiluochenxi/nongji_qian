@@ -1,30 +1,30 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="面积名字" prop="fieldsName">
+      <el-form-item label="电子围栏" prop="fieldsName">
         <el-input
           v-model="queryParams.fieldsName"
-          placeholder="请输入面积名字"
+          placeholder="请输入围栏名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="面积" prop="fieldsArea">
+      <!-- <el-form-item label="面积" prop="fieldsArea">
         <el-input
           v-model="queryParams.fieldsArea"
           placeholder="请输入面积"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="地图面积" prop="mapInfo">
+      </el-form-item> -->
+      <!-- <el-form-item label="地图面积" prop="mapInfo">
         <el-input
           v-model="queryParams.mapInfo"
           placeholder="请输入地图面积信息"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -82,33 +82,27 @@
      auto-resize="true" >
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
-      <el-table-column label="面积名字" align="center" prop="fieldsName" />
+      <el-table-column label="电子围栏名称" align="center" prop="fieldsName" />
       <!-- <el-table-column label="耕地类别" align="center" prop="agriTypeCategory" /> -->
-            <el-table-column label="耕地类别" align="center" prop="agriTypeCategory">
+        <el-table-column label="类别" align="center" prop="agriTypeCategory">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.agri_type_category" :value="scope.row.agriTypeCategory"/>
         </template>
       </el-table-column>
-      <el-table-column label="耕地类型" align="center" prop="agriTypeType" />
+      <el-table-column label="类型" align="center" prop="agriTypeType" />
       <el-table-column label="面积" align="center" prop="fieldsArea" />
-      <el-table-column label="地图面积" align="center" prop="mapInfo" />
-      <el-table-column label="状态" align="center" prop="status" />
+      <el-table-column label="地图信息" align="center" prop="mapInfo" />
+      <!-- <el-table-column label="状态" align="center" prop="status" /> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
+            icon="el-icon-location-information"
+            @click="getMap(scope.row)"
             v-hasPermi="['map:fields:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['map:fields:remove']"
-          >删除</el-button>
+          >查看地图</el-button>
+
         </template>
       </el-table-column>
     </el-table>
@@ -124,14 +118,14 @@
     <!-- 添加或修改任务耕地信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="面积名字" prop="fieldsName">
+        <el-form-item label="围栏名称" prop="fieldsName">
           <el-input v-model="form.fieldsName" placeholder="请输入面积名字" />
         </el-form-item>
-        <el-form-item label="面积" prop="fieldsArea">
+        <el-form-item label="围栏面积" prop="fieldsArea">
           <el-input v-model="form.fieldsArea" placeholder="请输入面积" />
         </el-form-item>
-
-        <el-form-item label="地图类型" prop="agriTypeType">
+   
+       <el-form-item label="耕作类型" prop="agriTypeType">
            <el-select v-model="form.agriTypeType" filterable placeholder="请选择" @change="setId" style="width: 100%;" >
             <el-option
               v-for="item in typeList"
@@ -143,10 +137,19 @@
 
       </el-form-item>
 
-
-        <el-form-item label="地图面积信息" prop="mapInfo">
+<el-form-item label="耕作类别" prop="agriTypeCategory" >
+    <el-select v-model="form.agriTypeCategory" :disabled="form.agriTypeType !== ''" placeholder="请选择耕作类别" style="display: block" >
+        <el-option
+            v-for="option in dict.type.agri_type_category"
+            :key="option.value"
+            :label="option.label"
+            :value="option.value"
+        ></el-option>
+    </el-select>
+</el-form-item>
+      <el-form-item label="地图信息" prop="mapInfo">
           <el-input v-model="form.mapInfo" placeholder="请输入地图面积信息" />
-        </el-form-item>
+        </el-form-item> 
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -304,6 +307,16 @@ export default {
         this.title = "修改任务耕地信息";
       });
     },
+
+        /** 地图按钮 */
+/** 地图按钮 */
+getMap(row) {
+  console.log("Row ID:", row.id);
+  this.reset();
+  this.$router.push({ path: `/map/fie-lds/get-map/${row.id}` });
+  console.log("Router Path:", `/map/fie-lds/get-map/${row.id}`);
+},
+
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
@@ -340,18 +353,20 @@ export default {
         ...this.queryParams
       }, `fields_${new Date().getTime()}.xlsx`)
     },
-        setId() {
-    // 获取选中的用户对象
-      const selectetypeList = this.typeList.find(item => item.type === this.form.agriTypeType);
-    // 将选中用户的id和种类赋值给对象
-      this.form.agriTypeId = selectetypeList ? selectetypeList.id : null;
-      this.form.agriTypeCategory = selectetypeList ? selectetypeList.category : null;
-
-          console.log("sss" + this.form.agriTypeId);
-         console.log("sss" + this.form.agriTypeCategory);
-
-  },
-
+      setId() {
+        // 获取选中的用户对象
+        const selectedType = this.typeList.find(item => item.type === this.form.agriTypeType);
+        // 将选中用户的id和种类赋值给对象
+        if (selectedType) {
+            this.form.agriTypeId = selectedType.id;
+            this.$set(this.form, 'agriTypeCategory', selectedType.category); // 使用this.$set()确保Vue.js检测到属性变化
+        } else {
+            this.form.agriTypeId = null;
+            this.$set(this.form, 'agriTypeCategory', '');
+        }
+        console.log("Agri Type ID: " + this.form.agriTypeId);
+        console.log("Agri Type Category: " + this.form.agriTypeCategory);
+    }
   }
 };
 </script>

@@ -375,7 +375,7 @@
 <script>
 import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus, deptTreeSelect } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
-import { listMachinery} from "@/api/agri/machinery";
+import { listMachineryQuery} from "@/api/agri/machinery";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -520,7 +520,7 @@ export default {
           * 获取农机信息
           */
         getArgiMachinery(){
-        listMachinery().then( res => {
+        listMachineryQuery().then( res => {
             if( res.code != 200){ return this.message("系统错误,请重新查询") }
           this.argiMachineryList = res.rows
           // console.log(this.userLis+"============"+ res.rows);

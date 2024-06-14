@@ -9,6 +9,15 @@ export function listMachinery(query) {
   })
 }
 
+// 查询农机管理列表
+export function listMachineryQuery(query) {
+  return request({
+    url: "/agri/machinery/listMachineryQuery",
+    method: "get",
+    params: query,
+  });
+}
+
 // 查询农机管理详细
 export function getMachinery(id) {
   return request({

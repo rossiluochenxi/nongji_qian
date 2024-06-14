@@ -9,6 +9,15 @@ export function listType(query) {
   })
 }
 
+// 查询面积类型管理列表
+export function listTypeQuery(query) {
+  return request({
+    url: "/agri/type/listTypeQuery",
+    method: "get",
+    params: query,
+  });
+}
+
 // 查询面积类型管理详细
 export function getType(id) {
   return request({
