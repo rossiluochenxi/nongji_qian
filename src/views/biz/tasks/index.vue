@@ -163,8 +163,8 @@
           <el-input v-model="form.agriFarmerName" placeholder="指派任务农机主" />
         </el-form-item> -->
         
-   <el-form-item label="农机主" prop="agriFarmerName">
-           <el-select v-model="form.agriFarmerName" filterable placeholder="请选择"  style="width: 100%;" >
+   <el-form-item label="农机主" prop="agriFarmerName"> 
+           <el-select v-model="form.agriFarmerName" filterable placeholder="请选择" @change="njId"  style="width: 100%;" >
             <el-option
               v-for="item in userList"
               :key="item.userId"
@@ -173,16 +173,29 @@
             </el-option>
           </el-select>
 
-      </el-form-item>
-             <el-form-item label="电子围栏" prop="agri_farmer_name">
-          <el-input v-model="form.agri_farmer_name" placeholder="请选择耕地作业电子围栏" />
-        </el-form-item>
+       </el-form-item>
+        <!-- <el-form-item label="电子围栏" prop="agriFieldsName">
+          <el-input v-model="form.agriFieldsName" placeholder="请选择耕地作业电子围栏" />
+        </el-form-item> -->
          <!-- <el-form-item label="任务状态" prop="status">
           <el-input v-model="form.status" placeholder="任务状态" />
         </el-form-item> -->
+    
+
+    <el-form-item label="电子围栏" prop="agriFieldsName">
+           <el-select v-model="form.agriFieldsName" filterable placeholder="请选择耕地作业电子围栏"  @change="mapId"  style="width: 100%;" >
+            <el-option
+              v-for="item in fieldsList"
+              :key="item.id"
+              :label="item.fieldsName"
+              :value="item.fieldsName">
+            </el-option>
+          </el-select>
+
+      </el-form-item>
           
        <el-form-item label="耕作类型" prop="agriTypeType">
-           <el-select v-model="form.agriTypeType" filterable placeholder="请选择" @change="setId" style="width: 100%;" >
+           <el-select v-model="form.agriTypeType" filterable placeholder="请选择耕作类型" @change="setId" style="width: 100%;" >
             <el-option
               v-for="item in typeList"
               :key="item.id"
@@ -233,6 +246,8 @@
 import { listTasks, getTasks, delTasks, addTasks, updateTasks } from "@/api/biz/tasks";
 import { listTypeQuery } from "@/api/agri/type";
 import { listUserQuery } from "@/api/system/user";
+import { listFieldsQuery} from "@/api/map/fields";
+
 
 
 export default {
@@ -240,6 +255,8 @@ export default {
    dicts: ['agri_type_category'],
   data() {
     return {
+       //电子围栏集合
+       fieldsList: [],
        //农户list集合
        userList: [],
        //类型list集合
@@ -279,11 +296,20 @@ export default {
       form: {},
       // 表单校验
       rules: {
-            agriTypeCategory: [
+         bizName: [
+          { required: true, message: "任务不能为空", trigger: "change" }
+        ],
+        agriTypeCategory: [
           { required: true, message: "耕地类别不能为空", trigger: "change" }
         ],
         agriTypeType: [
           { required: true, message: "耕地类型不能为空", trigger: "change" }
+        ],
+        agriFarmerName: [
+          { required: true, message: "农机主不能为空", trigger: "change" }
+        ],
+        agriFieldsName: [
+          { required: true, message: "电子围栏不能为空", trigger: "change" }
         ]
       }
     };
@@ -292,6 +318,7 @@ export default {
     this.getList();
     this.getType();
     this.getAgriUserList();
+    this.getListFieldsQuery();
   },
   methods: {
     /** 查询业务任务列表 */
@@ -303,28 +330,41 @@ export default {
         this.loading = false;
       });
     },
-            /**
-          * 获取地图作业类型
-          */
-        getType(){
-        listTypeQuery().then( res => {
-            if( res.code != 200){ return this.message("系统错误,请重新查询") }
-          this.typeList = res.rows
-          console.log(this.typeList+"============"+ res.rows);
-              }
-              )
+    /**
+  * 获取地图作业类型
+  */
+    getType() {
+      listTypeQuery().then(res => {
+        if (res.code != 200) { return this.message("系统错误,请重新查询") }
+        this.typeList = res.rows
+        console.log(this.typeList + "============" + res.rows);
+      }
+      )
     },
-                /**
-          * 获取农户信息
-          */
-        getAgriUserList(){
-        listUserQuery().then( res => {
-       if( res.code != 200){ return this.message("系统错误,请重新查询") }
-          this.userList = res.rows
-          console.log(this.userList+"============"+ res.rows);
-              }
-              )
-    }, 
+    /**
+* 获取农户信息
+*/
+    getAgriUserList() {
+      listUserQuery().then(res => {
+        if (res.code != 200) { return this.message("系统错误,请重新查询") }
+        this.userList = res.rows
+        console.log(this.userList + "============" + res.rows);
+      }
+      )
+    },
+    /**
+        * 获取电子围栏
+        */
+    getListFieldsQuery() {
+      listFieldsQuery().then(res => {
+        if (res.code != 200) { return this.message("系统错误,请重新查询") }
+        this.fieldsList = res.rows
+        console.log(this.fieldsList + "============" + res.rows);
+      }
+      )
+    },
+
+
     // 取消按钮
     cancel() {
       this.open = false;
@@ -365,7 +405,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -407,12 +447,12 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除业务任务编号为"' + ids + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除业务任务编号为"' + ids + '"的数据项？').then(function () {
         return delTasks(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => { });
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -420,21 +460,44 @@ export default {
         ...this.queryParams
       }, `tasks_${new Date().getTime()}.xlsx`)
     },
-      setId() {
-        // 获取选中的用户对象
-        const selectedType = this.typeList.find(item => item.type === this.form.agriTypeType);
-        // 将选中用户的id和种类赋值给对象
-        if (selectedType) {
-            this.form.agriTypeId = selectedType.id;
-            this.$set(this.form, 'agriTypeCategory', selectedType.category); // 使用this.$set()确保Vue.js检测到属性变化
-        } else {
-            this.form.agriTypeId = null;
-            this.$set(this.form, 'agriTypeCategory', '');
-        }
-        console.log("Agri Type ID: " + this.form.agriTypeId);
-        console.log("Agri Type Category: " + this.form.agriTypeCategory);
-    }
+    setId() {
+      // 获取选中的用户对象
+      const selectedType = this.typeList.find(item => item.type === this.form.agriTypeType);
+      // 将选中用户的id和种类赋值给对象
+      if (selectedType) {
+        this.form.agriTypeId = selectedType.id;
+        this.$set(this.form, 'agriTypeCategory', selectedType.category); // 使用this.$set()确保Vue.js检测到属性变化
+      } else {
+        this.form.agriTypeId = null;
+        this.$set(this.form, 'agriTypeCategory', '');
+      }
+      console.log("Agri Type ID: " + this.form.agriTypeId);
+      console.log("Agri Type Category: " + this.form.agriTypeCategory);
+    },
 
+    njId() {
+      // 获取选中的用户对象    <el-form-item label="农机主" prop="agriFarmerName"> nickName
+
+      const selectedUser = this.userList.find(item => item.nickName === this.form.agriFarmerName);
+      // 将选中用户的id和种类赋值给对象
+      this.form.agriFarmerId = selectedUser ? selectedUser.userId : null;
+      this.form.userId = selectedUser ? selectedUser.userId : null;
+      this.form.deptId = selectedUser ? selectedUser.deptId : null;
+
+       console.log("农机主ID"+this.form.agriFarmerId)
+       console.log("userID" + this.form.userId)
+       console.log("deptId" + this.form.deptId)
+         
+
+    },
+    mapId() {
+      // 获取选中的用户对象
+      const selectedMap = this.fieldsList.find(item => item.fieldsName === this.form.agriFieldsName);
+      // 将选中用户的id和种类赋值给对象
+       this.form.agriFieldsId = selectedMap ? selectedMap.id : null;
+       console.log("地图信息id"+this.form.agriFieldsId)
+
+    }
   }
 };
 </script>

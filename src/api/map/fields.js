@@ -9,6 +9,17 @@ export function listFields(query) {
   })
 }
 
+// 查询任务耕地信息列表
+export function listFieldsQuery(query) {
+  return request({
+    url: "/map/fields/listFieldsQuery",
+    method: "get",
+    params: query,
+  });
+}
+
+
+
 // 查询任务耕地信息详细
 export function getFields(id) {
   return request({
