@@ -77,6 +77,11 @@
       <el-table-column label="主机号" align="center" prop="hostNum" />
       <el-table-column label="农机类型" align="center" prop="machineryType" />
       <el-table-column label="农机长度" align="center" prop="machineryLength" />
+      <el-table-column label="农机宽度" align="center" prop="machineryWidth" />
+      <el-table-column label="农机编号" align="center" prop="machineryNo" />
+      <el-table-column label="农机品牌" align="center" prop="machineryBrand" />
+      <el-table-column label="农机马力" align="center" prop="machineryHp" />
+      <el-table-column label="所属农机主" align="center" prop="userMachineryId" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -119,10 +124,36 @@
     { validator: validateMachineryLength, message: '农机长度只能为数字', trigger: 'blur' }
   ]">
     <el-input v-model="form.machineryLength" placeholder="请输入农机长度" />
-  </el-form-item>
+     </el-form-item>
           <el-form-item label="农机类型" prop="machineryType">
           <el-input v-model="form.machineryType" placeholder="请输入农机类型" />
         </el-form-item>
+        <el-form-item label="农机宽度" prop="machineryWidth" :rules="[
+    { required: true, message: '请输入农机宽度', trigger: 'blur' },
+    { validator: validateMachineryWidth, message: '农机宽度只能为数字', trigger: 'blur' }
+  ]">
+    <el-input v-model="form.machineryWidth" placeholder="请输入农机长度" />
+     </el-form-item>
+
+     <el-form-item label="农机马力" prop="machineryHp" :rules="[
+    { required: true, message: '请输入农机马力', trigger: 'blur' },
+    { validator: validateMachineryHp, message: '农机马力只能为数字', trigger: 'blur' }
+  ]">
+    <el-input v-model="form.machineryHp" placeholder="请输入农机马力" />
+     </el-form-item>
+
+     <el-form-item label="农机品牌" prop="machineryBrand">
+          <el-input v-model="form.machineryBrand" placeholder="请输入农机品牌" />
+        </el-form-item>
+
+        <el-form-item label="农机编号" prop="machineryNo">
+          <el-input v-model="form.machineryNo" placeholder="请输入农机编号" />
+        </el-form-item>
+
+        <el-form-item label="所属农机主" prop="userMachineryId">
+          <el-input v-model="form.userMachineryId" placeholder="请输入所属农机主" />
+        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -169,6 +200,12 @@ export default {
       form: {
         machineryLength: ''  // 农机长度字段
       },
+      form: {
+        machineryHp: ''  // 农机马力字段
+      },
+      form: {
+        machineryWidth: ''  // 农机宽度字段
+      },
   
     // 表单校验
   rules: {
@@ -196,6 +233,22 @@ export default {
       const reg = /^\d+(\.\d+)?$/; // 正则表达式，用于匹配数字
       if (value && !reg.test(value)) {
         callback(new Error('农机长度只能为数字'));
+      } else {
+        callback();
+      }
+    },
+    validateMachineryWidth(rule, value, callback) {
+      const reg = /^\d+(\.\d+)?$/; // 正则表达式，用于匹配数字
+      if (value && !reg.test(value)) {
+        callback(new Error('农机宽度只能为数字'));
+      } else {
+        callback();
+      }
+    },
+    validateMachineryHp(rule, value, callback) {
+      const reg = /^\d+(\.\d+)?$/; // 正则表达式，用于匹配数字
+      if (value && !reg.test(value)) {
+        callback(new Error('农机马力只能为数字'));
       } else {
         callback();
       }

@@ -153,7 +153,7 @@
           <el-table-column label="用户昵称" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
           <el-table-column label="部门" align="center" key="deptName" prop="dept.deptName" v-if="columns[3].visible" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" width="120" />
-          <el-table-column label="农机号" align="center" key="hostNum" prop="hostNum" v-if="columns[5].visible" width="120" />
+          <!-- <el-table-column label="农机号" align="center" key="hostNum" prop="hostNum" v-if="columns[5].visible" width="120" /> -->
           <el-table-column label="状态" align="center" key="status" v-if="columns[6].visible">
             <template slot-scope="scope">
               <el-switch
@@ -234,16 +234,16 @@
               <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
             </el-form-item>
           </el-col>
-           <el-col :span="12">
-            <el-form-item label="身份证号" prop="identity">
+           <!-- <el-col :span="12">
+        <el-form-item label="身份证号" prop="identity">
               <el-input v-model="form.identity" placeholder="请输入身份证号" maxlength="18" />
-            </el-form-item>
-          </el-col>
-            <el-col :span="12">
-            <!-- <el-form-item label="农机号" prop="hostNum">
+            </el-form-item> 
+          </el-col> -->
+            <!-- <el-col :span="12">
+         <el-form-item label="农机号" prop="hostNum">
               <el-input v-model="form.hostNum" placeholder="请输入农机号" maxlength="18" />
-            </el-form-item> -->
-          <el-form-item label="农机号" prop="hostNum">
+            </el-form-item> 
+         <el-form-item label="农机号" prop="hostNum">
            <el-select v-model="form.hostNum" filterable placeholder="请选择" @change="setId" style="width: 100%;" >
             <el-option
               v-for="item in argiMachineryList"
@@ -254,7 +254,7 @@
           </el-select>
 
       </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
@@ -375,7 +375,7 @@
 <script>
 import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus, deptTreeSelect } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
-import { listMachineryQuery} from "@/api/agri/machinery";
+// import { listMachineryQuery} from "@/api/agri/machinery";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -499,7 +499,7 @@ export default {
   },
   created() {
     this.getList();
-     this.getArgiMachinery();
+    //  this.getArgiMachinery();
     this.getDeptTree();
     this.getConfigKey("sys.user.initPassword").then(response => {
       this.initPassword = response.msg;
@@ -519,14 +519,14 @@ export default {
              /**
           * 获取农机信息
           */
-        getArgiMachinery(){
-        listMachineryQuery().then( res => {
-            if( res.code != 200){ return this.message("系统错误,请重新查询") }
-          this.argiMachineryList = res.rows
-          // console.log(this.userLis+"============"+ res.rows);
-              }
-              )
-    },
+    //     getArgiMachinery(){
+    //     listMachineryQuery().then( res => {
+    //         if( res.code != 200){ return this.message("系统错误,请重新查询") }
+    //       this.argiMachineryList = res.rows
+    //       // console.log(this.userLis+"============"+ res.rows);
+    //           }
+    //           )
+    // },
     /** 查询部门下拉树结构 */
     getDeptTree() {
       deptTreeSelect().then(response => {

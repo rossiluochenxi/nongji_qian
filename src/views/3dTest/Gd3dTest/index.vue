@@ -5,7 +5,7 @@
       <div id="mapContainer" class="map-container"></div>
     </div>
         <!--地图 右边整体大盒子 -->
-    <div class="data-section" style="margin-top: 15px; " > 
+    <div class="data-section" style="margin-top: 15px; " >
         <!-- 搜索栏div -->
     <div class="search-bar">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
@@ -37,10 +37,10 @@
   <el-button icon="el-icon-refresh" size="mini" @click="resetQuery" style="margin-left: 3px;">重置</el-button>
 </div>
 
-  
+
 </el-row>
     </el-form>
-     
+
 
     </div>
 
@@ -73,7 +73,7 @@
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
-    />  
+    />
    </div>
         <!-- 列表div 结束 -->
 
@@ -154,7 +154,7 @@ export default {
       earTagNumber: "",
       deviceNumber: "",
       localList:[]
-   
+
     };
   },
   mounted() {
@@ -165,14 +165,14 @@ export default {
 
   },
   methods: {
-  
+
     /**
           * 获取农户信息
-          */ 
+          */
       getUserList(){
         listUser().then( res => {
             if( res.code != 200){ return this.message("系统错误,请重新查询") }
-   
+
           this.userList = res.rows
           this.userList.forEach(user => {
           const lon = parseFloat(user.lon); // 将经度字符串转换为浮点数
@@ -234,13 +234,13 @@ initMap() {
 
     /**
           * 冻结数据
-          */ 
+          */
     getList() {
       this.loading = true;
       listRtdata(this.queryParams).then(response => {
         this.rtdataList = response.rows;
         this.total = response.total;
-        
+
           // // 将经纬度数据添加到 this.livestockCoordinates 数组中
           // this.rtdataList.forEach(rtdata => {
           //       const livestockLon = parseFloat(rtdata.livestockLon); // 将经度字符串转换为浮点数
@@ -250,14 +250,14 @@ initMap() {
           this.loading = false;
           this.getUserList();
 
-        
+
       });
 
 
 
 
 
-      
+
     },
 
     search() {
@@ -267,7 +267,7 @@ initMap() {
     locateOnMap(rows) {
   this.localList = [];
   this.localList.push([rows.livestockLon, rows.livestockLat]);
-  
+
   const location = this.localList[0];
 
   if (location) {
@@ -289,7 +289,7 @@ initMap() {
 
     });
 
-    infoWindow.open(this.map, location);  
+    infoWindow.open(this.map, location);
     this.map.setCenter(location);
   }
 },
@@ -298,7 +298,7 @@ initMap() {
 //     locateOnMap(rows) {
 //   this.localList = [];
 //   this.localList.push([rows.livestockLon, rows.livestockLat]);
-  
+
 //   const location = this.localList[0];
 
 //   if (location) {
@@ -307,7 +307,7 @@ initMap() {
 //       map: this.map,
 //       visible: false // 设置标记不可见
 //     });
-  
+
 //     const infoWindowContent = `
 //       <div>
 //         <p>养殖户：${rows.agroUserName}</p>
@@ -324,7 +324,7 @@ initMap() {
 //       content: infoWindowContent
 //     });
 
-//     infoWindow.open(this.map, location);  
+//     infoWindow.open(this.map, location);
 //     this.map.setCenter(location);
 //   }
 // },
@@ -352,8 +352,8 @@ openInfoWindow(marker, rows) {
   infoWindow.open(this.map, marker);
 },
 
-   
-         
+
+
    formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -473,7 +473,7 @@ openInfoWindow(marker, rows) {
         ...this.queryParams
       }, `rtdata_${new Date().getTime()}.xlsx`)
     }
-  
+
   }
 };
 </script>
