@@ -9,6 +9,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+
       <el-form-item label="农机长度" prop="machineryLength">
         <el-input
           v-model="queryParams.machineryLength"
@@ -17,6 +18,20 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+<el-form-item label="农机类型" prop="machineryType">
+           <el-select v-model="queryParams.machineryType" filterable placeholder="请选择农机类型"   @change="setmachineryId" style="width: 100%;" >
+            <el-option
+              v-for="item in machineryTypeList"
+              :key="item.id"
+              :label="item.typeName"
+              :value="item.typeName"
+              >
+            
+            </el-option>
+          </el-select>
+       </el-form-item>
+
+
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -133,9 +148,28 @@
   ]">
     <el-input v-model="form.machineryLength" placeholder="请输入农机长度" />
      </el-form-item>
-          <el-form-item label="农机类型" prop="machineryType">
+
+      <el-form-item label="农机类型" prop="machineryType">
+           <el-select v-model="form.machineryType" filterable placeholder="请选择农机类型"   @change="setmachineryId" style="width: 100%;" >
+            <el-option
+              v-for="item in machineryTypeList"
+              :key="item.id"
+              :label="item.typeName"
+              :value="item.typeName">
+            </el-option>
+          </el-select>
+       </el-form-item>
+
+
+
+
+        <!-- <el-form-item label="农机类型" prop="machineryType">
           <el-input v-model="form.machineryType" placeholder="请输入农机类型" />
-        </el-form-item>
+        </el-form-item>  -->
+
+
+
+
         <el-form-item label="农机宽度" prop="machineryWidth" :rules="[
     { required: true, message: '请输入农机宽度', trigger: 'blur' },
     { validator: validateMachineryWidth, message: '农机宽度只能为数字', trigger: 'blur' }
@@ -173,11 +207,12 @@
 
 <script>
 import { listMachinery, getMachinery, delMachinery, addMachinery, updateMachinery } from "@/api/agri/machinery";
-
+import {listMachineryTypeQuery} from "@/api/agri/machineryType";
 export default {
   name: "Machinery",
   data() {
     return {
+     machineryTypeList:[],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -214,7 +249,7 @@ export default {
       form: {
         machineryWidth: ''  // 农机宽度字段
       },
-  
+
     // 表单校验
   rules: {
     hostNum: [
@@ -228,12 +263,14 @@ export default {
         ]
 
       }
-  
+
 
     };
   },
+  //沟子函数
   created() {
     this.getList();
+    this.getMachineryType();
   },
   methods: {
 
@@ -268,6 +305,12 @@ export default {
         this.machineryList = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+    },
+     //获取类型
+     getMachineryType() {
+      listMachineryTypeQuery(this.queryParams).then(response => {
+        this.machineryTypeList = response.rows;
       });
     },
     // 取消按钮
@@ -359,9 +402,16 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       this.download('agri/machinery/export', {
-        ...this.queryParams
+        ...this.queryParamslistmachineryTypeQuery
       }, `machinery_${new Date().getTime()}.xlsx`)
-    }
+    },  
+     setmachineryId() {
+      // 获取选中的用户对象
+      const selectedmachineryId = this.machineryTypeList.find(item => item.typeName === this.form.machineryType);
+      // 将选中用户的id和种类赋值给对象
+       this.form.machineryTypeId = selectedmachineryId ? selectedmachineryId.id : null;
+       console.log("查看农机类型id"+this.form.machineryTypeId)
+      }
   }
 };
 </script>

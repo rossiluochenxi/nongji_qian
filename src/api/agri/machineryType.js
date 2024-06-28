@@ -8,6 +8,13 @@ export function listMachineryType(query) {
     params: query
   })
 }
+export function listMachineryTypeQuery(query) {
+  return request({
+    url: '/agri/machineryType/listQuery',
+    method: 'get',
+    params: query
+  })
+}
 
 // 查询农机类型详细
 export function getMachineryType(id) {

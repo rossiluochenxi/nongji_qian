@@ -85,7 +85,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -112,10 +112,12 @@
 <script>
 import { listMachineryType, getMachineryType, delMachineryType, addMachineryType, updateMachineryType } from "@/api/agri/machineryType";
 
+
 export default {
   name: "MachineryType",
   data() {
     return {
+
       // 遮罩层
       loading: true,
       // 选中数组
@@ -152,6 +154,7 @@ export default {
   },
   created() {
     this.getList();
+
   },
   methods: {
     /** 查询农机类型列表 */
@@ -163,6 +166,7 @@ export default {
         this.loading = false;
       });
     },
+
     // 取消按钮
     cancel() {
       this.open = false;
