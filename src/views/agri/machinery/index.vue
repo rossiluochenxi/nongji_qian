@@ -74,6 +74,7 @@
      auto-resize="true">
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
+      <el-table-column label="农机名称" align="center" prop="name" />
       <el-table-column label="主机号" align="center" prop="hostNum" />
       <el-table-column label="农机类型" align="center" prop="machineryType" />
       <el-table-column label="农机长度" align="center" prop="machineryLength" />
@@ -81,7 +82,9 @@
       <el-table-column label="农机编号" align="center" prop="machineryNo" />
       <el-table-column label="农机品牌" align="center" prop="machineryBrand" />
       <el-table-column label="农机马力" align="center" prop="machineryHp" />
-      <el-table-column label="所属农机主" align="center" prop="userMachineryId" />
+      <!-- <el-table-column label="所属农机主" align="center" prop="userMachineryId" /> -->
+      <el-table-column label="所属农机主" align="center" prop="userMachineryName" />
+
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -113,6 +116,11 @@
     <!-- 添加或修改农机管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+
+       <el-form-item label="农机名称" prop="name">
+          <el-input v-model="form.name" placeholder="请输入农机名称" />
+        </el-form-item>
+
         <el-form-item label="主机号" prop="hostNum">
           <el-input v-model="form.hostNum" placeholder="请输入主机号" />
         </el-form-item>
@@ -150,8 +158,8 @@
           <el-input v-model="form.machineryNo" placeholder="请输入农机编号" />
         </el-form-item>
 
-        <el-form-item label="所属农机主" prop="userMachineryId">
-          <el-input v-model="form.userMachineryId" placeholder="请输入所属农机主" />
+        <el-form-item label="所属农机主" prop="userMachineryName">
+          <el-input v-model="form.userMachineryName" placeholder="请输入所属农机主" />
         </el-form-item>
 
       </el-form>

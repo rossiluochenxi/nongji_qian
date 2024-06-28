@@ -94,6 +94,8 @@
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="设备名称" align="center" prop="deviceName" />
+      <el-table-column label="设备编号" align="center" prop="deviceNo" />
+
       <!-- <el-table-column label="设备类型id" align="center" prop="deviceTypeId" /> -->
       <el-table-column label="设备类型" align="center" prop="deviceType" />
       <!-- <el-table-column label="设备状态" align="center" prop="deviceStatus" /> -->
@@ -102,7 +104,7 @@
           <dict-tag :options="dict.type.device_status" :value="scope.row.deviceStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="所属农机" align="center" prop="argiMachineryId" />
+      <el-table-column label="所属农机" align="center" prop="argiMachineryName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -136,6 +138,9 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="设备名称" prop="deviceName">
           <el-input v-model="form.deviceName" placeholder="请输入设备名称" />
+        </el-form-item>
+                <el-form-item label="设备编号" prop="deviceNo">
+          <el-input v-model="form.deviceNo" placeholder="请输入设备编号" />
         </el-form-item>
         <!-- <el-form-item label="设备类型id" prop="deviceTypeId">
           <el-input v-model="form.deviceTypeId" placeholder="请输入设备类型id" />
@@ -174,10 +179,11 @@
         </el-form-item>
 
 
-
-        <el-form-item label="所属农机" prop="argiMachineryId">
-          <el-input v-model="form.argiMachineryId" placeholder="请输入所属农机" />
+        <el-form-item label="所属农机" prop="argiMachineryName">
+          <el-input v-model="form.argiMachineryName" placeholder="请输入所属农机" />
         </el-form-item>
+
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -197,6 +203,7 @@ export default {
   name: "Device",
   data() {
     return {
+ 
       //设备类型
       deviceTypeList:[],
      // 遮罩层
@@ -248,6 +255,7 @@ export default {
     this.getList();
     this.getDeviceType();
   },
+  //写方法的地方
   methods: {
     /** 查询设备管理列表 */
     getList() {
@@ -262,9 +270,11 @@ export default {
      getDeviceType() {
       listDeviceTypeQuery(this.queryParams).then(response => {
         this.deviceTypeList = response.rows;
-        console.log(this.deviceTypeList + "============" + res.rows);
       });
     },
+
+
+
     // 取消按钮
     cancel() {
       this.open = false;

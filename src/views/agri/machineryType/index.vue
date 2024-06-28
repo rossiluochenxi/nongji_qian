@@ -61,9 +61,10 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="machineryTypeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="machineryTypeList" @selection-change="handleSelectionChange"
+     border resizable>
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键id" align="center" prop="id" />
+      <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="类型名称" align="center" prop="typeName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
