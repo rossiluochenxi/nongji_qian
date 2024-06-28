@@ -17,14 +17,33 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item> -->
-      <el-form-item label="所属农机" prop="argiMachineryId">
+
+
+
+      <!-- <el-form-item label="所属农机" prop="argiMachineryId">
         <el-input
           v-model="queryParams.argiMachineryId"
           placeholder="请输入所属农机"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
+
+      <el-form-item label="所属农机" prop="argiMachineryName">
+        <el-select v-model="queryParams.argiMachineryName" filterable placeholder="请输入所属农机" @change="setargiMachineryId"  style="width: 100%;" >
+         <el-option
+           v-for="item in machineryQuerylist"
+           :key="item.id"
+           :label="item.name"
+           :value="item.name">
+         </el-option>
+       </el-select>
+   </el-form-item>
+
+
+
+
+
         <el-form-item label="设备类型" prop="deviceType">
            <el-select v-model="queryParams.deviceType" filterable placeholder="请选择设备类型"   style="width: 100%;" >
             <el-option
@@ -158,8 +177,6 @@
               :value="item.typeName">
             </el-option>
           </el-select>
-
-
       </el-form-item>
        <!-- <el-form-item label="设备状态" prop="deviceStatus">
           <el-input v-model="form.deviceStatus" placeholder="请输入设备状态" />
@@ -179,9 +196,22 @@
         </el-form-item>
 
 
-        <el-form-item label="所属农机" prop="argiMachineryName">
+        <!-- <el-form-item label="所属农机" prop="argiMachineryName">
           <el-input v-model="form.argiMachineryName" placeholder="请输入所属农机" />
-        </el-form-item>
+
+        </el-form-item> -->
+
+
+        <el-form-item label="所属农机" prop="argiMachineryName">
+          <el-select v-model="form.argiMachineryName" filterable placeholder="请输入所属农机" @change="setargiMachineryId"  style="width: 100%;" >
+           <el-option
+             v-for="item in machineryQuerylist"
+             :key="item.id"
+             :label="item.name"
+             :value="item.name">
+           </el-option>
+         </el-select>
+     </el-form-item>
 
 
       </el-form>
@@ -196,6 +226,8 @@
 <script>
 import { listDevice, getDevice, delDevice, addDevice, updateDevice } from "@/api/agri/device";
 import { listDeviceTypeQuery } from "@/api/agri/deviceType";
+import { listMachineryQuery } from "@/api/agri/machinery";
+
 
 
 export default {
@@ -206,6 +238,8 @@ export default {
  
       //设备类型
       deviceTypeList:[],
+      //农机集合
+      machineryQuerylist:[],
      // 遮罩层
       loading: true,
       // 选中数组
@@ -254,6 +288,7 @@ export default {
   created() {
     this.getList();
     this.getDeviceType();
+    this.getlistMachineryQuery();
   },
   //写方法的地方
   methods: {
@@ -271,6 +306,17 @@ export default {
       listDeviceTypeQuery(this.queryParams).then(response => {
         this.deviceTypeList = response.rows;
       });
+    },
+    //获取农机集合
+    getlistMachineryQuery() {
+
+      listMachineryQuery(this.queryParams).then(response => {
+
+        this.machineryQuerylist = response.rows;
+        console.log("打印"+this.machineryQuerylist)
+
+      });
+
     },
 
 
@@ -295,7 +341,8 @@ export default {
         deviceTypeId: null,
         deviceType: null,
         deviceStatus: null,
-        argiMachineryId: null
+        argiMachineryId: null,
+        argiMachineryName: null
       };
       this.resetForm("form");
     },
@@ -310,7 +357,7 @@ export default {
       this.handleQuery();
     },
     // 多选框选中数据
-    handleSelectionChange(selection) {
+    handleSelectionChange(selection) {  
       this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
@@ -374,7 +421,13 @@ export default {
        this.form.deviceTypeId = selectedTypeId ? selectedTypeId.id : null;
        console.log("类型id"+this.form.deviceTypeId)
 
-    }
-  }
-};
-</script>
+    },
+    setargiMachineryId(){
+      const selectedargiMachineryId = this.machineryQuerylist.find(item => item.name === this.form.argiMachineryName); 
+      // 将选中用户的id和种类赋值给对象
+       this.form.argiMachineryId = selectedargiMachineryId ? selectedargiMachineryId.id : null;
+       console.log("农机id"+this.form.machineryQuerylist)
+  }  
+}
+}
+</script>  
