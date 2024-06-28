@@ -8,6 +8,14 @@ export function listDeviceType(query) {
     params: query
   })
 }
+// 查询设备类型列表
+export function listDeviceTypeQuery(query) {
+  return request({
+    url: "/agri/deviceType/listQuery",
+    method: "get",
+    params: query,
+  });
+}
 
 // 查询设备类型详细
 export function getDeviceType(id) {

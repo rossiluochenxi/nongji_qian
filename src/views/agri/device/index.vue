@@ -9,14 +9,14 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="设备类型id" prop="deviceTypeId">
+      <!-- <el-form-item label="设备类型id" prop="deviceTypeId">
         <el-input
           v-model="queryParams.deviceTypeId"
           placeholder="请输入设备类型id"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="所属农机" prop="argiMachineryId">
         <el-input
           v-model="queryParams.argiMachineryId"
@@ -24,6 +24,18 @@
           clearable
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+        <el-form-item label="设备类型" prop="deviceType">
+           <el-select v-model="queryParams.deviceType" filterable placeholder="请选择设备类型"   style="width: 100%;" >
+            <el-option
+              v-for="item in deviceTypeList"
+              :key="item.id"
+              :label="item.typeName"
+              :value="item.typeName">
+            </el-option>
+          </el-select>
+
+
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -77,13 +89,19 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="deviceList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="deviceList" @selection-change="handleSelectionChange"
+     border resizable>
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键id" align="center" prop="id" />
+      <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="设备名称" align="center" prop="deviceName" />
-      <el-table-column label="设备类型id" align="center" prop="deviceTypeId" />
+      <!-- <el-table-column label="设备类型id" align="center" prop="deviceTypeId" /> -->
       <el-table-column label="设备类型" align="center" prop="deviceType" />
-      <el-table-column label="设备状态" align="center" prop="deviceStatus" />
+      <!-- <el-table-column label="设备状态" align="center" prop="deviceStatus" /> -->
+            <el-table-column label="设备状态" align="center" prop="deviceStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.device_status" :value="scope.row.deviceStatus"/>
+        </template>
+      </el-table-column>
       <el-table-column label="所属农机" align="center" prop="argiMachineryId" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -119,9 +137,44 @@
         <el-form-item label="设备名称" prop="deviceName">
           <el-input v-model="form.deviceName" placeholder="请输入设备名称" />
         </el-form-item>
-        <el-form-item label="设备类型id" prop="deviceTypeId">
+        <!-- <el-form-item label="设备类型id" prop="deviceTypeId">
           <el-input v-model="form.deviceTypeId" placeholder="请输入设备类型id" />
+        </el-form-item> -->
+        <!-- <el-form-item label="设备类型" prop="deviceType">
+          <el-input v-model="form.deviceType" placeholder="请输入设备类型" />
+        </el-form-item> -->
+
+           <el-form-item label="设备类型" prop="deviceType">
+           <el-select v-model="form.deviceType" filterable placeholder="请选择设备类型"  @change="setTypeId" style="width: 100%;" >
+            <el-option
+              v-for="item in deviceTypeList"
+              :key="item.id"
+              :label="item.typeName"
+              :value="item.typeName">
+            </el-option>
+          </el-select>
+
+
+      </el-form-item>
+       <!-- <el-form-item label="设备状态" prop="deviceStatus">
+          <el-input v-model="form.deviceStatus" placeholder="请输入设备状态" />
+        </el-form-item> -->
+    
+
+
+       <el-form-item label="设备状态" prop="deviceStatus"  >
+          <el-select v-model="form.deviceStatus" placeholder="设备状态" style="display: block;">
+            <el-option
+              v-for="dict in dict.type.device_status"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
+
+
+
         <el-form-item label="所属农机" prop="argiMachineryId">
           <el-input v-model="form.argiMachineryId" placeholder="请输入所属农机" />
         </el-form-item>
@@ -136,18 +189,23 @@
 
 <script>
 import { listDevice, getDevice, delDevice, addDevice, updateDevice } from "@/api/agri/device";
+import { listDeviceTypeQuery } from "@/api/agri/deviceType";
+
 
 export default {
+  dicts: ['device_status'],
   name: "Device",
   data() {
     return {
-      // 遮罩层
+      //设备类型
+      deviceTypeList:[],
+     // 遮罩层
       loading: true,
       // 选中数组
       ids: [],
       // 非单个禁用
       single: true,
-      // 非多个禁用
+      // 非多个禁用  
       multiple: true,
       // 显示搜索条件
       showSearch: true,
@@ -185,8 +243,10 @@ export default {
       }
     };
   },
+  //钩子函数
   created() {
     this.getList();
+    this.getDeviceType();
   },
   methods: {
     /** 查询设备管理列表 */
@@ -196,6 +256,13 @@ export default {
         this.deviceList = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+    },
+    //获取类型
+     getDeviceType() {
+      listDeviceTypeQuery(this.queryParams).then(response => {
+        this.deviceTypeList = response.rows;
+        console.log(this.deviceTypeList + "============" + res.rows);
       });
     },
     // 取消按钮
@@ -289,6 +356,14 @@ export default {
       this.download('agri/device/export', {
         ...this.queryParams
       }, `device_${new Date().getTime()}.xlsx`)
+    },
+        setTypeId() {
+      // 获取选中的用户对象
+      const selectedTypeId = this.deviceTypeList.find(item => item.typeName === this.form.deviceType);
+      // 将选中用户的id和种类赋值给对象
+       this.form.deviceTypeId = selectedTypeId ? selectedTypeId.id : null;
+       console.log("类型id"+this.form.deviceTypeId)
+
     }
   }
 };
