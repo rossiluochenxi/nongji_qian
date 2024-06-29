@@ -159,9 +159,8 @@
             </el-option>
           </el-select>
        </el-form-item>
-
-
-
+     
+   
 
         <!-- <el-form-item label="农机类型" prop="machineryType">
           <el-input v-model="form.machineryType" placeholder="请输入农机类型" />
@@ -192,9 +191,21 @@
           <el-input v-model="form.machineryNo" placeholder="请输入农机编号" />
         </el-form-item>
 
-        <el-form-item label="所属农机主" prop="userMachineryName">
+        <!-- <el-form-item label="所属农机主" prop="userMachineryName">
           <el-input v-model="form.userMachineryName" placeholder="请输入所属农机主" />
-        </el-form-item>
+        </el-form-item> -->
+
+           <el-form-item label="所属农机主" prop="userMachineryName" label-width="83px">
+           <el-select v-model="form.userMachineryName" filterable placeholder="请选择所属农机主"  @change="setuserMachineryId"  style="width: 100%;" >
+            <el-option
+              v-for="item in nickNameList"
+              :key="item.userId"
+              :label="item.nickName"
+              :value="item.nickName">
+            </el-option>
+          </el-select>
+       </el-form-item>
+
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -208,10 +219,12 @@
 <script>
 import { listMachinery, getMachinery, delMachinery, addMachinery, updateMachinery } from "@/api/agri/machinery";
 import {listMachineryTypeQuery} from "@/api/agri/machineryType";
+import {listUserQuery} from "@/api/system/user";
 export default {
   name: "Machinery",
   data() {
     return {
+     nickNameList:[],
      machineryTypeList:[],
       // 遮罩层
       loading: true,
@@ -271,6 +284,7 @@ export default {
   created() {
     this.getList();
     this.getMachineryType();
+    this.getNickName();
   },
   methods: {
 
@@ -313,7 +327,13 @@ export default {
         this.machineryTypeList = response.rows;
       });
     },
-    // 取消按钮
+         //获取类型
+     getNickName() {
+      listUserQuery(this.queryParams).then(response => {
+        this.nickNameList = response.rows;
+      });
+    },
+    //取消按钮
     cancel() {
       this.open = false;
       this.reset();
@@ -411,6 +431,13 @@ export default {
       // 将选中用户的id和种类赋值给对象
        this.form.machineryTypeId = selectedmachineryId ? selectedmachineryId.id : null;
        console.log("查看农机类型id"+this.form.machineryTypeId)
+      },
+       setuserMachineryId() {
+      // 获取选中的用户对象
+      const selecteduserMachineryId = this.nickNameList.find(item => item.nickName === this.form.userMachineryName);
+      // 将选中用户的id和种类赋值给对象
+       this.form.userMachineryId = selecteduserMachineryId ? selecteduserMachineryId.userId : null;
+       console.log("查看农机主ID"+this.form.userMachineryId)
       }
   }
 };
