@@ -84,15 +84,16 @@
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="电子围栏名称" align="center" prop="fieldsName" />
       <!-- <el-table-column label="耕地类别" align="center" prop="agriTypeCategory" /> -->
-        <el-table-column label="类别" align="center" prop="agriTypeCategory">
+        <!-- <el-table-column label="类别" align="center" prop="agriTypeCategory">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.agri_type_category" :value="scope.row.agriTypeCategory"/>
         </template>
-      </el-table-column>
-      <el-table-column label="类型" align="center" prop="agriTypeType" />
+      </el-table-column> -->
+      <!-- <el-table-column label="类型" align="center" prop="agriTypeType" /> -->
       <el-table-column label="面积" align="center" prop="fieldsArea" />
       <el-table-column label="地图信息" align="center" prop="mapInfo" />
       <!-- <el-table-column label="状态" align="center" prop="status" /> -->
+
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -125,7 +126,7 @@
           <el-input v-model="form.fieldsArea" placeholder="请输入面积" />
         </el-form-item>
    
-       <el-form-item label="耕作类型" prop="agriTypeType">
+       <!-- <el-form-item label="耕作类型" prop="agriTypeType">
            <el-select v-model="form.agriTypeType" filterable placeholder="请选择" @change="setId" style="width: 100%;" >
             <el-option
               v-for="item in typeList"
@@ -146,7 +147,7 @@
             :value="option.value"
         ></el-option>
     </el-select>
-</el-form-item>
+</el-form-item> -->
       <el-form-item label="地图信息" prop="mapInfo">
           <el-input v-model="form.mapInfo" placeholder="请输入地图面积信息" />
         </el-form-item> 
@@ -161,7 +162,7 @@
 
 <script>
 import { listFields, getFields, delFields, addFields, updateFields } from "@/api/map/fields";
-import { listType } from "@/api/agri/type";
+// import { listType } from "@/api/agri/type";
 
 
 export default {
@@ -207,15 +208,15 @@ export default {
         fieldsName: [
           { required: true, message: "面积名字不能为空", trigger: "blur" }
         ],
-        agriTypeId: [
-          { required: true, message: "耕地类型id不能为空", trigger: "blur" }
-        ],
-        agriTypeCategory: [
-          { required: true, message: "耕地类别不能为空", trigger: "change" }
-        ],
-        agriTypeType: [
-          { required: true, message: "耕地类型不能为空", trigger: "change" }
-        ],
+        // agriTypeId: [
+        //   { required: true, message: "耕地类型id不能为空", trigger: "blur" }
+        // ],
+        // agriTypeCategory: [
+        //   { required: true, message: "耕地类别不能为空", trigger: "change" }
+        // ],
+        // agriTypeType: [
+        //   { required: true, message: "耕地类型不能为空", trigger: "change" }
+        // ],
         fieldsArea: [
           { required: true, message: "面积不能为空", trigger: "blur" }
         ],
@@ -227,7 +228,7 @@ export default {
   },
   created() {
     this.getList();
-    this.getType();
+    // this.getType();
   },
   methods: {
     /** 查询任务耕地信息列表 */
@@ -242,14 +243,14 @@ export default {
         /**
           * 获取地图作业类型
           */
-        getType(){
-        listType().then( res => {
-            if( res.code != 200){ return this.message("系统错误,请重新查询") }
-          this.typeList = res.rows
-          console.log(this.typeList+"============"+ res.rows);
-              }
-              )
-    },
+    //     getType(){
+    //     listType().then( res => {
+    //         if( res.code != 200){ return this.message("系统错误,请重新查询") }
+    //       this.typeList = res.rows
+    //       console.log(this.typeList+"============"+ res.rows);
+    //           }
+    //           )
+    // },
     // 取消按钮
     cancel() {
       this.open = false;
