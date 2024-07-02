@@ -191,7 +191,7 @@
     <el-input v-model="form.machineryWidth" placeholder="请输入农机宽度" />
      </el-form-item>
 
-          <el-form-item label="所属农机主" prop="userMachineryName" label-width="95px">
+          <el-form-item label="所属农机主" prop="userMachineryName" label-width="80px"  :style="{ whiteSpace: 'nowrap' }">
            <el-select v-model="form.userMachineryName" filterable placeholder="请选择所属农机主"  @change="setuserMachineryId"  style="width: 100%;" >
             <el-option
               v-for="item in nickNameList"
