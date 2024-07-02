@@ -1,25 +1,27 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="主机号" prop="hostNum">
+      <!-- <el-form-item label="主机号" prop="hostNum">
         <el-input
           v-model="queryParams.hostNum"
           placeholder="请输入主机号"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
 
-      <el-form-item label="农机长度" prop="machineryLength">
+      <!-- <el-form-item label="农机长度" prop="machineryLength">
         <el-input
           v-model="queryParams.machineryLength"
           placeholder="请输入农机长度"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
+    
+
 <el-form-item label="农机类型" prop="machineryType">
-           <el-select v-model="queryParams.machineryType" filterable placeholder="请选择农机类型"   @change="setmachineryId" style="width: 100%;" >
+           <el-select v-model="queryParams.machineryType" filterable placeholder="请选择农机类型"   style="width: 100%;" >
             <el-option
               v-for="item in machineryTypeList"
               :key="item.id"
@@ -30,7 +32,17 @@
             </el-option>
           </el-select>
        </el-form-item>
-
+      
+       <el-form-item label="所属农机主" prop="userMachineryName" label-width="83px">
+           <el-select v-model="queryParams.userMachineryName" filterable placeholder="请选择所属农机主"   style="width: 100%;" >
+            <el-option
+              v-for="item in nickNameList"
+              :key="item.userId"
+              :label="item.nickName"
+              :value="item.nickName">
+            </el-option>
+          </el-select>
+       </el-form-item>
 
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -90,7 +102,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="农机名称" align="center" prop="name" />
-      <el-table-column label="主机号" align="center" prop="hostNum" />
+      <!-- <el-table-column label="主机号" align="center" prop="hostNum" /> -->
       <el-table-column label="农机类型" align="center" prop="machineryType" />
       <el-table-column label="农机长度" align="center" prop="machineryLength" />
       <el-table-column label="农机宽度" align="center" prop="machineryWidth" />
@@ -136,9 +148,9 @@
           <el-input v-model="form.name" placeholder="请输入农机名称" />
         </el-form-item>
 
-        <el-form-item label="主机号" prop="hostNum">
+        <!-- <el-form-item label="主机号" prop="hostNum">
           <el-input v-model="form.hostNum" placeholder="请输入主机号" />
-        </el-form-item>
+        </el-form-item> -->
         <!-- <el-form-item label="农机长度" prop="machineryLength">
           <el-input v-model="form.machineryLength" placeholder="请输入农机长度" />
         </el-form-item> -->
@@ -159,6 +171,8 @@
             </el-option>
           </el-select>
        </el-form-item>
+
+       
      
    
 
@@ -266,7 +280,7 @@ export default {
     // 表单校验
   rules: {
     hostNum: [
-          { required: true, message: "主机号不能为空", trigger: "blur" }
+          // { required: true, message: "主机号不能为空", trigger: "blur" }
         ],
     machineryLength: [
           { required: true, message: '农机长度不能为空', trigger: 'blur' },
