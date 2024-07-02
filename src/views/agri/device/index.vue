@@ -281,6 +281,13 @@ export default {
         deviceStatus: [
           { required: true, message: "设备状态不能为空", trigger: "change" }
         ],
+         deviceNo: [
+          { required: true, message: "设备编号不能为空", trigger: "change" }
+        ],
+         argiMachineryName: [
+          { required: true, message: "所属农机不能为空", trigger: "change" }
+        ],
+
       }
     };
   },

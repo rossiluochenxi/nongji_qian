@@ -101,16 +101,17 @@
      auto-resize="true">
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
+      <el-table-column label="所属农机主" align="center" prop="userMachineryName" />
       <el-table-column label="农机名称" align="center" prop="name" />
       <!-- <el-table-column label="主机号" align="center" prop="hostNum" /> -->
       <el-table-column label="农机类型" align="center" prop="machineryType" />
-      <el-table-column label="农机长度" align="center" prop="machineryLength" />
+      <!-- <el-table-column label="农机长度" align="center" prop="machineryLength" /> -->
       <el-table-column label="农机宽度" align="center" prop="machineryWidth" />
       <el-table-column label="农机编号" align="center" prop="machineryNo" />
       <el-table-column label="农机品牌" align="center" prop="machineryBrand" />
       <el-table-column label="农机马力" align="center" prop="machineryHp" />
       <!-- <el-table-column label="所属农机主" align="center" prop="userMachineryId" /> -->
-      <el-table-column label="所属农机主" align="center" prop="userMachineryName" />
+      
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -154,12 +155,12 @@
         <!-- <el-form-item label="农机长度" prop="machineryLength">
           <el-input v-model="form.machineryLength" placeholder="请输入农机长度" />
         </el-form-item> -->
-        <el-form-item label="农机长度" prop="machineryLength" :rules="[
+        <!-- <el-form-item label="农机长度" prop="machineryLength" :rules="[
     { required: true, message: '请输入农机长度', trigger: 'blur' },
     { validator: validateMachineryLength, message: '农机长度只能为数字', trigger: 'blur' }
   ]">
     <el-input v-model="form.machineryLength" placeholder="请输入农机长度" />
-     </el-form-item>
+     </el-form-item> -->
 
       <el-form-item label="农机类型" prop="machineryType">
            <el-select v-model="form.machineryType" filterable placeholder="请选择农机类型"   @change="setmachineryId" style="width: 100%;" >
@@ -187,29 +188,10 @@
     { required: true, message: '请输入农机宽度', trigger: 'blur' },
     { validator: validateMachineryWidth, message: '农机宽度只能为数字', trigger: 'blur' }
   ]">
-    <el-input v-model="form.machineryWidth" placeholder="请输入农机长度" />
+    <el-input v-model="form.machineryWidth" placeholder="请输入农机宽度" />
      </el-form-item>
 
-     <el-form-item label="农机马力" prop="machineryHp" :rules="[
-    { required: true, message: '请输入农机马力', trigger: 'blur' },
-    { validator: validateMachineryHp, message: '农机马力只能为数字', trigger: 'blur' }
-  ]">
-    <el-input v-model="form.machineryHp" placeholder="请输入农机马力" />
-     </el-form-item>
-
-     <el-form-item label="农机品牌" prop="machineryBrand">
-          <el-input v-model="form.machineryBrand" placeholder="请输入农机品牌" />
-        </el-form-item>
-
-        <el-form-item label="农机编号" prop="machineryNo">
-          <el-input v-model="form.machineryNo" placeholder="请输入农机编号" />
-        </el-form-item>
-
-        <!-- <el-form-item label="所属农机主" prop="userMachineryName">
-          <el-input v-model="form.userMachineryName" placeholder="请输入所属农机主" />
-        </el-form-item> -->
-
-           <el-form-item label="所属农机主" prop="userMachineryName" label-width="83px">
+          <el-form-item label="所属农机主" prop="userMachineryName" label-width="95px">
            <el-select v-model="form.userMachineryName" filterable placeholder="请选择所属农机主"  @change="setuserMachineryId"  style="width: 100%;" >
             <el-option
               v-for="item in nickNameList"
@@ -220,6 +202,23 @@
           </el-select>
        </el-form-item>
 
+
+        <el-form-item label="农机编号" prop="machineryNo">
+          <el-input v-model="form.machineryNo" placeholder="请输入农机编号" />
+        </el-form-item>
+
+
+
+     <el-form-item label="农机马力" prop="machineryHp" :rules="[
+   // { required: true, message: '请输入农机马力', trigger: 'blur' },
+    { validator: validateMachineryHp, message: '农机马力只能为数字', trigger: 'blur' }
+  ]">
+    <el-input v-model="form.machineryHp" placeholder="请输入农机马力" />
+     </el-form-item>
+
+     <el-form-item label="农机品牌" prop="machineryBrand">
+          <el-input v-model="form.machineryBrand" placeholder="请输入农机品牌" />
+        </el-form-item>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -268,7 +267,7 @@ export default {
       },
       // 表单参数
       form: {
-        machineryLength: ''  // 农机长度字段
+        // machineryLength: ''  // 农机长度字段
       },
       form: {
         machineryHp: ''  // 农机马力字段
@@ -283,11 +282,19 @@ export default {
           // { required: true, message: "主机号不能为空", trigger: "blur" }
         ],
     machineryLength: [
-          { required: true, message: '农机长度不能为空', trigger: 'blur' },
+          // { required: true, message: '农机长度不能为空', trigger: 'blur' },
         ],
     machineryType:     [
           { required: true, message: "农机类型不能为空", trigger: "blur" }
+        ],
+        machineryNo:     [
+          { required: true, message: "农机编号不能为空", trigger: "blur" }
+        ],
+         userMachineryName:     [
+          { required: true, message: "所属农机主不能为空", trigger: "blur" }
         ]
+
+
 
       }
 
@@ -302,14 +309,14 @@ export default {
   },
   methods: {
 
-    validateMachineryLength(rule, value, callback) {
-      const reg = /^\d+(\.\d+)?$/; // 正则表达式，用于匹配数字
-      if (value && !reg.test(value)) {
-        callback(new Error('农机长度只能为数字'));
-      } else {
-        callback();
-      }
-    },
+    // validateMachineryLength(rule, value, callback) {
+    //   const reg = /^\d+(\.\d+)?$/; // 正则表达式，用于匹配数字
+    //   if (value && !reg.test(value)) {
+    //     callback(new Error('农机长度只能为数字'));
+    //   } else {
+    //     callback();
+    //   }
+    // },
     validateMachineryWidth(rule, value, callback) {
       const reg = /^\d+(\.\d+)?$/; // 正则表达式，用于匹配数字
       if (value && !reg.test(value)) {
