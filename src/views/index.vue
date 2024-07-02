@@ -8,7 +8,7 @@
           <el-row>
             <el-col :span="6"><dv-decoration-8 class="title_right" :color="['#008CFF', '#00ADDD']" /></el-col>
             <el-col :span="12">
-              <div class="title_text">陶 源 生 物 资 产 监 管 系 统</div>
+              <div class="title_text" style="font-size: 36px;">陶 源 生 物 农 机 监 管 系 统</div>
               <dv-decoration-5 class="title_center" :color="['#008CFF', '#00ADDD']" />
             </el-col>
             <el-col :span="6">
@@ -42,7 +42,7 @@
               <!-- 柱状图部分 -->
               <div class="left_box2">
                 <dv-border-box-12 style="padding-top: 13px">
-                  <p style="margin-left: 13px">品种数量</p>
+                  <p style="margin-left: 25px">数 据 汇 总</p>
                   <div id="columnar"></div>
                 </dv-border-box-12>
               </div>
@@ -66,7 +66,7 @@
               <dv-border-box-8>
                 <div id="line_center_diagram"></div>
               </dv-border-box-8>
-
+<!-- 
               <dv-border-box-12 style="padding-top: 38px">
                 <div class="warning_table">
                   <div style="height: 250px; overflow-y: auto;">
@@ -86,7 +86,29 @@
                     </el-table>
                   </div>
                 </div>
+              </dv-border-box-12> -->
+
+              <dv-border-box-12 style="padding-top: 38px">
+                <div class="warning_table">
+                  <div style="height: 250px; overflow-y: auto;">
+
+                    <el-table class="el-table" :data="tableData" height="100%"
+                      style="width: 98%;margin-left: 10px;margin-top:-15px; color:cyan;">
+                      <el-table-column prop="agroUserName" label="农机户主" width="250">
+                      </el-table-column>
+                      <el-table-column prop="agroLivestockIccid" label="设备编号" width="250">
+                      </el-table-column>
+                      <el-table-column prop="livestockVarieties" label="土地剩余面积">
+                      </el-table-column>
+                      <el-table-column prop="info" label="土地汇总信息">
+                      </el-table-column>
+                      <el-table-column prop="date" label="预计完成时间">
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                </div>
               </dv-border-box-12>
+
 
 
             </el-col>
@@ -95,7 +117,7 @@
               <!-- 轮播排行榜部分 -->
               <div class="right_box1">
                 <dv-border-box-12 :border="false">
-                  <dv-decoration-7 style="width: 100%; height: 30px">品 种 排 名</dv-decoration-7>
+                  <dv-decoration-7 style="width: 100%; height: 40px;font-size: 25px;"> 数 目 统 计 </dv-decoration-7>
                   <dv-scroll-ranking-board :config="config" style="width: 95%; height: 87%; margin-left: 2%" />
                 </dv-border-box-12>
               </div>
@@ -110,10 +132,10 @@
                   />
                 </dv-border-box-12>
               </div> -->
-              <!-- 养 殖 户 排 名 -->
+              <!-- 农 机 用 户 统 计 -->
               <div class="right_box2">
                 <dv-border-box-12 :border="false">
-                  <dv-decoration-7 style="width: 100%; height: 30px">养 殖 户 排 名</dv-decoration-7>
+                  <dv-decoration-7 style="width: 100%; height: 40px; font-size: 25px;"> 农 机 用 户 统 计 </dv-decoration-7>
                   <dv-scroll-ranking-board :config="userNum" style="width: 95%; height: 87%; margin-left: 2%" />
                 </dv-border-box-12>
               </div>
@@ -221,9 +243,9 @@ export default {
       numberData: [
         {
           number: {
-            number: 15,
+            number: 25,
           },
-          text: "牛群结构",
+          text: "土地分配框图",//牛群结构
         },
         // {
         //   number: {
@@ -430,7 +452,7 @@ export default {
       // 配置项
       const option = {
         title: {
-            text: '项圈在线数',
+            text: '土地面积占耕比',  //项圈在线数
             left: 'center',
             textStyle: {
               color: 'white' // 设置字体颜色为白色
@@ -474,7 +496,7 @@ export default {
       // 耳标在线数量配置项
       const option = {
         title: {
-            text: '耳标在线数',
+            text: '农机产品在线数量',  //耳标在线数
             left: 'center',
             textStyle: {
               color: 'white' // 设置字体颜色为白色
@@ -491,7 +513,7 @@ export default {
         },
         series: [
           {
-            name: '耳标',
+            name: '面积',//耳标
             type: 'pie',
             radius: '50%',
             data: this.chartData,
@@ -544,6 +566,7 @@ export default {
       });
     },
     /**
+     * 
      * 获取养殖户排名
      */
     getAgroNumlist() {
@@ -598,7 +621,7 @@ export default {
              this.chartData = response.rows.map(row => {
              return {
                 value: parseInt(row.totalNumber),
-                name: row.deviceStatus === '在线' ? '在线耳标' : '离线耳标',
+                name: row.deviceStatus === '在线' ? '在线耳标' : '离线数量', //离线耳标
                 itemStyle: {
                     color: row.deviceStatus === '在线' ? '#90EE90' : '#CD5C5C'
                 }
@@ -617,18 +640,38 @@ export default {
         * 项圈设备在线离线数量
         *  
         */  
-    getxqDeviceState() {
+
+
+    //原版
+    // getxqDeviceState() {
+    //   this.loading = true;
+    //   xqOnOffLineDevice().then(response => {
+    //    this.collarchartData = response.rows.map(row => {
+    //          return {
+    //             value: parseInt(row.totalNumber),
+    //             name: row.deviceStatus === '在线' ? '在线项圈' : '离线项圈',
+    //             itemStyle: {
+    //                 color: row.deviceStatus === '在线' ? '#90EE90' : '#CD5C5C'
+    //             }
+    //         };
+    //          });
+    //HongSymbol 改版
+             getxqDeviceState() {
       this.loading = true;
       xqOnOffLineDevice().then(response => {
        this.collarchartData = response.rows.map(row => {
              return {
                 value: parseInt(row.totalNumber),
-                name: row.deviceStatus === '在线' ? '在线项圈' : '离线项圈',
+                name: row.deviceStatus === '在线' ? '在线项圈' : '空地占比',
                 itemStyle: {
                     color: row.deviceStatus === '在线' ? '#90EE90' : '#CD5C5C'
                 }
             };
              });
+
+      
+
+
     // 初始化 项圈 
     this.initCollarChart();
         this.loading = false; // 数据加载完成后设置 loading 为 false
