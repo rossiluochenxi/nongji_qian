@@ -150,10 +150,17 @@
         </template>
       </el-table-column> -->
 
-      <el-table-column label="任务流水号" align="center" prop="serialNum" />
+      <!-- <el-table-column label="任务流水号" align="center" prop="serialNum" /> -->
       <!-- <el-table-column label="任务名称" align="center" prop="bizName" /> -->
-      <el-table-column label="耕地类别" align="center" prop="agriTypeCategory" />
+      <!-- <el-table-column label="耕地类别" align="center" prop="agriTypeCategory" /> -->
+               <el-table-column label="类别" align="center" prop="agriTypeCategory">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.agri_type_category" :value="scope.row.agriTypeCategory"/>
+        </template>
+      </el-table-column>
       <el-table-column label="耕地类型" align="center" prop="agriTypeType" />
+ 
+ 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -185,14 +192,14 @@
     <!-- 添加或修改我的任务对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="任务名称" prop="bizTasksName">
-          <el-input v-model="form.bizTasksName" placeholder="请输入任务名称" />
+        <el-form-item label="任务名称"   prop="bizTasksName">
+          <el-input v-model="form.bizTasksName"  disabled="true" placeholder="请输入任务名称" />
         </el-form-item>
         <el-form-item label="农机主" prop="agriFarmerName">
-          <el-input v-model="form.agriFarmerName" placeholder="请输入农机主" />
+          <el-input v-model="form.agriFarmerName"  disabled="true" placeholder="请输入农机主" />
         </el-form-item>
         <el-form-item label="电子围栏" prop="agriFieldsName">
-          <el-input v-model="form.agriFieldsName" placeholder="请输入面积名字" />
+          <el-input v-model="form.agriFieldsName"  disabled="true"  placeholder="请输入面积名字" />
         </el-form-item>
         <!-- <el-form-item label="任务开始时间" prop="startTime">
           <el-date-picker clearable
@@ -211,7 +218,7 @@
           </el-date-picker>
         </el-form-item> -->
         <el-form-item label="任务状态" prop="tasksStatus">
-          <el-select v-model="form.tasksStatus" placeholder="请选择任务状态">
+          <el-select v-model="form.tasksStatus" placeholder="请选择任务状态" style="width: 100%;" >
             <el-option
               v-for="dict in dict.type.tasks_status"
               :key="dict.value"
@@ -220,18 +227,28 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="流水号" prop="serialNum">
+        <!-- <el-form-item label="流水号" prop="serialNum">
           <el-input v-model="form.serialNum" placeholder="请输入任务流水号" />
-        </el-form-item>
+        </el-form-item> -->
         <!-- <el-form-item label="任务名称" prop="bizName">
           <el-input v-model="form.bizName" placeholder="请输入任务名称" />
         </el-form-item> -->
-        <el-form-item label="耕地类别" prop="agriTypeCategory">
-          <el-input v-model="form.agriTypeCategory" placeholder="请输入耕地类别" />
-        </el-form-item>
+
+
+<el-form-item label="耕作类别" prop="agriTypeCategory" >
+    <el-select v-model="form.agriTypeCategory"   :disabled="true" placeholder="请选择耕作类别" style="display: block" >
+        <el-option
+            v-for="option in dict.type.agri_type_category"
+            :key="option.value"
+            :label="option.label"
+            :value="option.value"
+        ></el-option>
+    </el-select>
+</el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="newSubmitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -239,11 +256,12 @@
 </template>
 
 <script>
-import { listTasksAssignments, getTasksAssignments, delTasksAssignments, addTasksAssignments, updateTasksAssignments } from "@/api/biz/tasksAssignments";
+import { listTasksAssignments, getTasksAssignments, delTasksAssignments, addTasksAssignments, updateTasksAssignments,updateTasksData } from "@/api/biz/tasksAssignments";
 
 export default {
+   
   name: "TasksAssignments",
-  dicts: ['tasks_status'],
+  dicts: ['tasks_status','agri_type_category'],
   data() {
     return {
       // 遮罩层
@@ -369,6 +387,28 @@ export default {
         if (valid) {
           if (this.form.id != null) {
             updateTasksAssignments(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            addTasksAssignments(this.form).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
+          }
+        }
+      });
+    },
+
+
+        /** 新提交按钮2 */
+    newSubmitForm() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.id != null) {
+            updateTasksData(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();

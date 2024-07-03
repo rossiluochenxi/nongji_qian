@@ -101,14 +101,20 @@
      auto-resize="true">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="任务名称" align="center" prop="bizName" />
-      <el-table-column label="任务状态" align="center" prop="status" />
+      <el-table-column label="任务状态" align="center" prop="status">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.tasks_status" :value="scope.row.status"/>
+        </template>
+    </el-table-column>
+
+
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="农机主" align="center" prop="agriFarmerName" />
 
 
 
       <el-table-column label="电子围栏" align="center" prop="agriFieldsName" />
-              <el-table-column label="类别" align="center" prop="agriTypeCategory">
+    <el-table-column label="类别" align="center" prop="agriTypeCategory">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.agri_type_category" :value="scope.row.agriTypeCategory"/>
         </template>
@@ -180,6 +186,17 @@
          <!-- <el-form-item label="任务状态" prop="status">
           <el-input v-model="form.status" placeholder="任务状态" />
         </el-form-item> -->
+        
+<el-form-item label="任务状态" prop="status" >
+    <el-select v-model="form.status"   placeholder="请选择任务状态" style="display: block" >
+        <el-option
+            v-for="option in dict.type.status"
+            :key="option.value"
+            :label="option.label"
+            :value="option.value"
+        ></el-option>
+    </el-select>
+</el-form-item>
     
 
     <el-form-item label="电子围栏" prop="agriFieldsName">
@@ -252,7 +269,7 @@ import { listFieldsQuery} from "@/api/map/fields";
 
 export default {
   name: "Tasks",
-   dicts: ['agri_type_category'],
+   dicts: ['agri_type_category', 'tasks_status' ],
   data() {
     return {
        //电子围栏集合
