@@ -200,7 +200,7 @@
           <el-input v-model="form.status" placeholder="任务状态" />
         </el-form-item> -->
 
-<el-form-item label="任务状态" prop="status" >
+<!-- <el-form-item label="任务状态" prop="status" >
     <el-select v-model="form.status"   placeholder="请选择任务状态" style="display: block" >
         <el-option
             v-for="option in dict.type.status"
@@ -209,7 +209,7 @@
             :value="option.value"
         ></el-option>
     </el-select>
-</el-form-item>
+</el-form-item> -->
 
 
     <el-form-item label="电子围栏" prop="agriFieldsName">
@@ -459,14 +459,14 @@ export default {
       this.open = true;
       this.title = "添加业务任务";
     },
-    /** 撤回按钮操作 */
+    /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
       getTasks(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "撤回业务任务";
+        this.title = "修改业务任务";
       });
     },
     /** 提交按钮 */
@@ -504,7 +504,7 @@ export default {
         /** 撤回 */
      withdrawAss(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认撤回业务任务编号为"' + ids + '"的数据项？').then(function () {
+      this.$modal.confirm('是否确认业务任务编号为"' + ids + '"的数据项？').then(function () {
         return withdraw(ids);
       }).then(() => {
         this.getList();
