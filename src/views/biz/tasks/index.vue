@@ -110,6 +110,8 @@
 
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="农机主" align="center" prop="agriFarmerName" />
+      <el-table-column label="任务创建者" align="center" prop="taskCreate" />
+
 
 
 
@@ -149,7 +151,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -160,7 +162,7 @@
 
     <!-- 添加或修改业务任务对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-       
+
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
              <el-form-item label="任务名称" prop="bizName">
           <el-input v-model="form.bizName" placeholder="请输入任务名称" />
@@ -168,8 +170,8 @@
         <!-- <el-form-item label="农机主" prop="agriFarmerName">
           <el-input v-model="form.agriFarmerName" placeholder="指派任务农机主" />
         </el-form-item> -->
-        
-   <el-form-item label="农机主" prop="agriFarmerName"> 
+
+   <el-form-item label="农机主" prop="agriFarmerName">
            <el-select v-model="form.agriFarmerName" filterable placeholder="请选择" @change="njId"  style="width: 100%;" >
             <el-option
               v-for="item in userList"
@@ -186,7 +188,7 @@
          <!-- <el-form-item label="任务状态" prop="status">
           <el-input v-model="form.status" placeholder="任务状态" />
         </el-form-item> -->
-        
+
 <el-form-item label="任务状态" prop="status" >
     <el-select v-model="form.status"   placeholder="请选择任务状态" style="display: block" >
         <el-option
@@ -197,7 +199,7 @@
         ></el-option>
     </el-select>
 </el-form-item>
-    
+
 
     <el-form-item label="电子围栏" prop="agriFieldsName">
            <el-select v-model="form.agriFieldsName" filterable placeholder="请选择耕地作业电子围栏"  @change="mapId"  style="width: 100%;" >
@@ -210,7 +212,7 @@
           </el-select>
 
       </el-form-item>
-          
+
        <el-form-item label="耕作类型" prop="agriTypeType">
            <el-select v-model="form.agriTypeType" filterable placeholder="请选择耕作类型" @change="setId" style="width: 100%;" >
             <el-option
@@ -249,7 +251,7 @@
             placeholder="请选择任务结束时间">
           </el-date-picker>
         </el-form-item> -->
-  
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -307,7 +309,8 @@ export default {
         agriTypeCategory: null,
         agriTypeType: null,
         status: null,
-        bizName: null
+        bizName: null,
+        taskCreate: null
       },
       // 表单参数
       form: {},
@@ -504,7 +507,7 @@ export default {
        console.log("农机主ID"+this.form.agriFarmerId)
        console.log("userID" + this.form.userId)
        console.log("deptId" + this.form.deptId)
-         
+
 
     },
     mapId() {
