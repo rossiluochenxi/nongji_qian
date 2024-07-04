@@ -35,6 +35,15 @@ export function updateTasksAssignments(data) {
   })
 }
 
+// 修改任务状态
+export function updateTasksData(data) {
+  return request({
+    url: '/biz/tasksAssignments/updateTasksData',
+    method: 'put',
+    data: data
+  })
+}
+
 // 删除我的任务
 export function delTasksAssignments(id) {
   return request({

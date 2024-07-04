@@ -93,6 +93,7 @@
         >导出</el-button>
       </el-col>
 
+
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -101,14 +102,22 @@
      auto-resize="true">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="任务名称" align="center" prop="bizName" />
-      <el-table-column label="任务状态" align="center" prop="status" />
+      <el-table-column label="任务状态" align="center" prop="status">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.tasks_status" :value="scope.row.status"/>
+        </template>
+    </el-table-column>
+
+
       <!-- <el-table-column label="主键id" align="center" prop="id" /> -->
       <el-table-column label="农机主" align="center" prop="agriFarmerName" />
+      <el-table-column label="任务创建者" align="center" prop="taskCreate" />
+
 
 
 
       <el-table-column label="电子围栏" align="center" prop="agriFieldsName" />
-              <el-table-column label="类别" align="center" prop="agriTypeCategory">
+    <el-table-column label="类别" align="center" prop="agriTypeCategory">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.agri_type_category" :value="scope.row.agriTypeCategory"/>
         </template>
@@ -133,6 +142,15 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['biz:tasks:edit']"
           >修改</el-button>
+
+          <el-button
+          size="mini"
+          type="text"
+          icon="el-icon-delete"
+          @click="withdrawAss(scope.row)"
+          v-hasPermi="['biz:tasks:remove']"
+        >撤回</el-button>
+
           <el-button
             size="mini"
             type="text"
@@ -140,10 +158,11 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['biz:tasks:remove']"
           >删除</el-button>
+
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -154,7 +173,7 @@
 
     <!-- 添加或修改业务任务对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-       
+
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
              <el-form-item label="任务名称" prop="bizName">
           <el-input v-model="form.bizName" placeholder="请输入任务名称" />
@@ -162,8 +181,8 @@
         <!-- <el-form-item label="农机主" prop="agriFarmerName">
           <el-input v-model="form.agriFarmerName" placeholder="指派任务农机主" />
         </el-form-item> -->
-        
-   <el-form-item label="农机主" prop="agriFarmerName"> 
+
+   <el-form-item label="农机主" prop="agriFarmerName">
            <el-select v-model="form.agriFarmerName" filterable placeholder="请选择" @change="njId"  style="width: 100%;" >
             <el-option
               v-for="item in userList"
@@ -180,7 +199,18 @@
          <!-- <el-form-item label="任务状态" prop="status">
           <el-input v-model="form.status" placeholder="任务状态" />
         </el-form-item> -->
-    
+
+<!-- <el-form-item label="任务状态" prop="status" >
+    <el-select v-model="form.status"   placeholder="请选择任务状态" style="display: block" >
+        <el-option
+            v-for="option in dict.type.status"
+            :key="option.value"
+            :label="option.label"
+            :value="option.value"
+        ></el-option>
+    </el-select>
+</el-form-item> -->
+
 
     <el-form-item label="电子围栏" prop="agriFieldsName">
            <el-select v-model="form.agriFieldsName" filterable placeholder="请选择耕地作业电子围栏"  @change="mapId"  style="width: 100%;" >
@@ -193,7 +223,7 @@
           </el-select>
 
       </el-form-item>
-          
+
        <el-form-item label="耕作类型" prop="agriTypeType">
            <el-select v-model="form.agriTypeType" filterable placeholder="请选择耕作类型" @change="setId" style="width: 100%;" >
             <el-option
@@ -232,7 +262,7 @@
             placeholder="请选择任务结束时间">
           </el-date-picker>
         </el-form-item> -->
-  
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -243,7 +273,7 @@
 </template>
 
 <script>
-import { listTasks, getTasks, delTasks, addTasks, updateTasks } from "@/api/biz/tasks";
+import { listTasks, getTasks, delTasks, addTasks, updateTasks,withdraw } from "@/api/biz/tasks";
 import { listTypeQuery } from "@/api/agri/type";
 import { listUserQuery } from "@/api/system/user";
 import { listFieldsQuery} from "@/api/map/fields";
@@ -252,7 +282,7 @@ import { listFieldsQuery} from "@/api/map/fields";
 
 export default {
   name: "Tasks",
-   dicts: ['agri_type_category'],
+   dicts: ['agri_type_category', 'tasks_status' ],
   data() {
     return {
        //电子围栏集合
@@ -290,7 +320,8 @@ export default {
         agriTypeCategory: null,
         agriTypeType: null,
         status: null,
-        bizName: null
+        bizName: null,
+        taskCreate: null
       },
       // 表单参数
       form: {},
@@ -330,6 +361,20 @@ export default {
         this.loading = false;
       });
     },
+//     methods: {
+//   handleWithdraw() {
+//     // 向后端发送请求执行撤回操作
+//     axios.post('/api/withdraw', { taskId: this.taskId })
+//       .then(response => {
+//         // 操作成功后的处理，可以给出成功提示或者刷新数据等
+//         console.log('撤回成功');
+//       })
+//       .catch(error => {
+//         // 操作失败后的处理，可以给出错误提示或者其他处理
+//         console.error('撤回失败', error);
+//       });
+//   }
+// },
     /**
   * 获取地图作业类型
   */
@@ -454,6 +499,21 @@ export default {
         this.$modal.msgSuccess("删除成功");
       }).catch(() => { });
     },
+
+
+        /** 撤回 */
+     withdrawAss(row) {
+      const ids = row.id || this.ids;
+      this.$modal.confirm('是否确认业务任务编号为"' + ids + '"的数据项？').then(function () {
+        return withdraw(ids);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("撤回成功");
+      }).catch(() => { });
+    },
+
+
+
     /** 导出按钮操作 */
     handleExport() {
       this.download('biz/tasks/export', {
@@ -487,7 +547,7 @@ export default {
        console.log("农机主ID"+this.form.agriFarmerId)
        console.log("userID" + this.form.userId)
        console.log("deptId" + this.form.deptId)
-         
+
 
     },
     mapId() {
