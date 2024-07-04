@@ -91,7 +91,7 @@
       </el-table-column> -->
       <!-- <el-table-column label="类型" align="center" prop="agriTypeType" /> -->
       <el-table-column label="面积" align="center" prop="fieldsArea" />
-      <el-table-column label="地图信息" align="center" prop="mapInfo" />
+      <!-- <el-table-column label="地图信息" align="center" prop="mapInfo" /> -->
       <!-- <el-table-column label="状态" align="center" prop="status" /> -->
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -148,9 +148,9 @@
         ></el-option>
     </el-select>
 </el-form-item> -->
-      <el-form-item label="地图信息" prop="mapInfo">
+      <!-- <el-form-item label="地图信息" prop="mapInfo">
           <el-input v-model="form.mapInfo" placeholder="请输入地图面积信息" />
-        </el-form-item> 
+        </el-form-item>  -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
