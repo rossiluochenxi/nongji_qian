@@ -44,9 +44,9 @@ export function delTasks(id) {
 }
 
 // 撤回业务
-export function asd(id) {
+export function withdraw(id) {
   return request({
-    url: '/biz/tasks/asd//withdraw/{ids}' + id,
+    url: '/biz/tasks/withdraw/' + id,
     method: 'delete'
   })
 }

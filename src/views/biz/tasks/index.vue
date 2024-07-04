@@ -147,7 +147,7 @@
           size="mini"
           type="text"
           icon="el-icon-delete"
-          @click="handleDelete(scope.row)"
+          @click="withdrawAss(scope.row)"
           v-hasPermi="['biz:tasks:remove']"
         >撤回</el-button>
 
@@ -273,7 +273,7 @@
 </template>
 
 <script>
-import { listTasks, getTasks, delTasks, addTasks, updateTasks,asd } from "@/api/biz/tasks";
+import { listTasks, getTasks, delTasks, addTasks, updateTasks,withdraw } from "@/api/biz/tasks";
 import { listTypeQuery } from "@/api/agri/type";
 import { listUserQuery } from "@/api/system/user";
 import { listFieldsQuery} from "@/api/map/fields";
@@ -361,20 +361,20 @@ export default {
         this.loading = false;
       });
     },
-    methods: {
-  handleWithdraw() {
-    // 向后端发送请求执行撤回操作
-    axios.post('/api/withdraw', { taskId: this.taskId })
-      .then(response => {
-        // 操作成功后的处理，可以给出成功提示或者刷新数据等
-        console.log('撤回成功');
-      })
-      .catch(error => {
-        // 操作失败后的处理，可以给出错误提示或者其他处理
-        console.error('撤回失败', error);
-      });
-  }
-},
+//     methods: {
+//   handleWithdraw() {
+//     // 向后端发送请求执行撤回操作
+//     axios.post('/api/withdraw', { taskId: this.taskId })
+//       .then(response => {
+//         // 操作成功后的处理，可以给出成功提示或者刷新数据等
+//         console.log('撤回成功');
+//       })
+//       .catch(error => {
+//         // 操作失败后的处理，可以给出错误提示或者其他处理
+//         console.error('撤回失败', error);
+//       });
+//   }
+// },
     /**
   * 获取地图作业类型
   */
@@ -459,7 +459,7 @@ export default {
       this.open = true;
       this.title = "添加业务任务";
     },
-    /** 修改按钮操作 */
+    /** 撤回按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
@@ -502,10 +502,10 @@ export default {
 
 
         /** 撤回 */
- asddelete(row) {
+     withdrawAss(row) {
       const ids = row.id || this.ids;
       this.$modal.confirm('是否确认撤回业务任务编号为"' + ids + '"的数据项？').then(function () {
-        return asd(ids);
+        return withdraw(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("撤回成功");
