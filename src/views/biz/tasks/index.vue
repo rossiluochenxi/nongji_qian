@@ -144,7 +144,7 @@
           >修改</el-button> -->
 
           <el-button
-          v-if="scope.row.withdrawLive === '1'" 
+          v-if="scope.row.withdrawLive === '1'"
           size="mini"
           type="text"
           icon="el-icon-delete"
@@ -152,7 +152,7 @@
           v-hasPermi="['biz:tasks:remove']"
         >撤回</el-button>
          <el-button
-         v-if="scope.row.withdrawLive === '0'" 
+         v-if="scope.row.withdrawLive === '0'"
             size="mini"
             type="text"
             icon="el-icon-edit"
