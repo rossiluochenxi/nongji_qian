@@ -135,13 +135,13 @@
       <!-- </el-table-column> -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['biz:tasks:edit']"
-          >修改</el-button>
+          >修改</el-button> -->
 
           <el-button
           size="mini"
@@ -150,14 +150,20 @@
           @click="withdrawAss(scope.row)"
           v-hasPermi="['biz:tasks:remove']"
         >撤回</el-button>
-
-          <el-button
+         <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="putReissue(scope.row)"
+            v-hasPermi="['biz:tasks:edit']"
+          >重新下发</el-button>
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['biz:tasks:remove']"
-          >删除</el-button>
+          >删除</el-button> -->
 
         </template>
       </el-table-column>
@@ -273,7 +279,7 @@
 </template>
 
 <script>
-import { listTasks, getTasks, delTasks, addTasks, updateTasks,withdraw } from "@/api/biz/tasks";
+import { listTasks, getTasks, delTasks, addTasks, updateTasks,withdraw,reissue } from "@/api/biz/tasks";
 import { listTypeQuery } from "@/api/agri/type";
 import { listUserQuery } from "@/api/system/user";
 import { listFieldsQuery} from "@/api/map/fields";
@@ -469,19 +475,29 @@ export default {
         this.title = "修改业务任务";
       });
     },
+        /** 重新下发按钮操作 */
+     putReissue(row) {
+      this.reset();
+      const id = row.id || this.ids
+      getTasks(id).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "重新下发业务任务";
+      });
+    },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateTasks(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
+            reissue(this.form).then(response => {
+              this.$modal.msgSuccess("重新下发成功");
               this.open = false;
               this.getList();
             });
           } else {
             addTasks(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
+              this.$modal.msgSuccess("下发成功");
               this.open = false;
               this.getList();
             });

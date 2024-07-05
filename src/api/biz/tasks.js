@@ -50,3 +50,12 @@ export function withdraw(id) {
     method: 'delete'
   })
 }
+
+// 重新下发业务任务
+export function reissue(data) {
+  return request({
+    url: '/biz/tasks/reissue/',
+    method: 'put',
+    data: data
+  })
+}
