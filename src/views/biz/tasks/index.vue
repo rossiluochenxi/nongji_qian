@@ -476,10 +476,10 @@ export default {
       });
     },
         /** 重新下发按钮操作 */
-        putReissue(row) {
+     putReissue(row) {
       this.reset();
       const id = row.id || this.ids
-      reissue(id).then(response => {
+      getTasks(id).then(response => {
         this.form = response.data;
         this.open = true;
         this.title = "重新下发业务任务";
@@ -490,14 +490,14 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateTasks(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
+            reissue(this.form).then(response => {
+              this.$modal.msgSuccess("重新下发成功");
               this.open = false;
               this.getList();
             });
           } else {
             addTasks(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
+              this.$modal.msgSuccess("下发成功");
               this.open = false;
               this.getList();
             });
