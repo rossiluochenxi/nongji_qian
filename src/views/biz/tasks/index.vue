@@ -144,6 +144,7 @@
           >修改</el-button> -->
 
           <el-button
+          v-if="scope.row.withdrawLive === '1'" 
           size="mini"
           type="text"
           icon="el-icon-delete"
@@ -151,6 +152,7 @@
           v-hasPermi="['biz:tasks:remove']"
         >撤回</el-button>
          <el-button
+         v-if="scope.row.withdrawLive === '0'" 
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -363,6 +365,8 @@ export default {
       this.loading = true;
       listTasks(this.queryParams).then(response => {
         this.tasksList = response.rows;
+                // this.withdrawLive = 0
+        // console.log("大博测试"+ withdraw);
         this.total = response.total;
         this.loading = false;
       });
