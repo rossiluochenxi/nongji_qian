@@ -57,14 +57,14 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
+        <!-- <el-button
           type="primary"
           plain
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
           v-hasPermi="['biz:tasksSerial:add']"
-        >新增</el-button>
+        >新增</el-button> -->
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -78,7 +78,7 @@
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
+        <!-- <el-button
           type="danger"
           plain
           icon="el-icon-delete"
@@ -86,7 +86,7 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['biz:tasksSerial:remove']"
-        >删除</el-button>
+        >删除</el-button> -->
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -129,13 +129,13 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['biz:tasksSerial:edit']"
           >修改</el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['biz:tasksSerial:remove']"
-          >删除</el-button>
+          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
