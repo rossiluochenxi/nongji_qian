@@ -51,6 +51,18 @@
           />
         </el-select>
       </el-form-item>
+
+
+       <el-form-item label="种类搜索" prop="agriTypeCategory">
+        <el-select v-model="queryParams.agriTypeCategory" placeholder="请选择种类" clearable>
+          <el-option
+            v-for="dict in dict.type.agri_type_category"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <!-- <el-form-item label="任务流水号" prop="serialNum">
         <el-input
           v-model="queryParams.serialNum"
@@ -261,7 +273,7 @@ import { listTasksAssignments, getTasksAssignments, delTasksAssignments, addTask
 export default {
    
   name: "TasksAssignments",
-  dicts: ['tasks_status','agri_type_category'],
+  dicts: ['tasks_status','agri_type_category','agri_ype_category'],
   data() {
     return {
       // 遮罩层
