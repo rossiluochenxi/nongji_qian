@@ -8,7 +8,7 @@
           <el-row>
             <el-col :span="6"><dv-decoration-8 class="title_right" :color="['#008CFF', '#00ADDD']" /></el-col>
             <el-col :span="12">
-              <div class="title_text" style="font-size: 36px;">陶 源 生 物 农 机 监 管 系 统</div>
+              <div class="title_text" style="font-size: 36px;">陶 源 农 机 监 管 系 统</div>
               <dv-decoration-5 class="title_center" :color="['#008CFF', '#00ADDD']" />
             </el-col>
             <el-col :span="6">
